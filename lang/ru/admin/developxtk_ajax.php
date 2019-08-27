@@ -1,0 +1,1 @@
+<?require($_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/developx.tk/admin/developxtk_ajax.php');?>
