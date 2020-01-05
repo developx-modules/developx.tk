@@ -6,15 +6,19 @@ use Bitrix\Main\ArgumentOutOfRangeException;
 
 require_once('sdk-sdek/CalculatePriceDeliveryCdek.php');
 
+/**
+ * Class Sdek
+ */
 class Sdek extends TksBase
 {
-    public $userId = '';
+    /**
+     * @var array Api methods
+     */
     public $methods = [
         'pvzlist' => 'https://integration.cdek.ru/pvzlist.php?type=ALL'
     ];
     public $tkName = 'sdek';
     public $externalCode = 'SDEK_ID';
-    public $tkTitle = 'СДЕК';
 
     public function getPriceTime($cityTo, $options, $cityFrom){
         $calc = new \CalculatePriceDeliveryCdek();

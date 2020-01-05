@@ -3,8 +3,16 @@ namespace Developx\Tk;
 use Developx\Tk\DB\DeliveryInfoTable;
 use Developx\Tk\DB\PointsTable;
 
+/**
+ * Class Dbmethods
+ */
 class Dbmethods
 {
+
+    /**
+     * @param array $data
+     * @return integer
+     **/
     public static function addPoint($data)
     {
         $result = PointsTable::add($data);
@@ -16,6 +24,10 @@ class Dbmethods
         return false;
     }
 
+    /**
+     * @param array $data
+     * @return array
+     **/
     public static function getPoint($data)
     {
         $result = PointsTable::getList(array(
@@ -29,6 +41,10 @@ class Dbmethods
         return false;
     }
 
+    /**
+     * @param int $locId
+     * @return array
+     **/
     public static function getPointByLoc($locId)
     {
         $arResult = [];
@@ -43,11 +59,18 @@ class Dbmethods
         return $arResult;
     }
 
+    /**
+     * @param integer $id
+     * @param array $data
+     **/
     public static function updatePoint($id, $data)
     {
         PointsTable::update($id, $data);
     }
 
+    /**
+     * Clear all points
+     **/
     public static function clearPoints()
     {
         $logs = PointsTable::getList(array(
@@ -59,6 +82,12 @@ class Dbmethods
         }
     }
 
+    /**
+     * Get saved transport companys for location
+     *
+     * @param integer $locId
+     * @return array
+     **/
     public function getInfo($locId){
         $arResult = [];
         $result = DeliveryInfoTable::getList(array(
@@ -72,6 +101,10 @@ class Dbmethods
         return $arResult;
     }
 
+    /**
+     * @param array $data
+     * @return integer
+     **/
     public function saveInfo($data){
         $result = DeliveryInfoTable::add($data);
 

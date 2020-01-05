@@ -7,8 +7,14 @@ use Developx\Tk\Options;
 
 require_once('sdk-pec/pecom_kabinet.php');
 
+/**
+ * Class Pec
+ */
 class Pec extends TksBase
 {
+    /**
+     * @var array Api methods
+     */
     public $methods = [
         'calc' => 'http://calc.pecom.ru/bitrix/components/pecom/calc/ajax.php',
         'towns' => 'https://new.pecom.ru/ru/calc/towns.php',
@@ -17,7 +23,6 @@ class Pec extends TksBase
     public $tkName = 'pec';
     public $externalCode = 'PEC_ID';
     public $apiKeyCode = 'PEC_KEY';
-    public $tkTitle = 'ПЭК';
 
     public function getPriceTime($cityTo, $options, $cityFrom){
         $price = $this->getData(

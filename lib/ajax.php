@@ -10,8 +10,17 @@ use Developx\Tk\Dbmethods;
 
 \Bitrix\Main\Loader::includeModule("iblock");
 
+/**
+ * Ajax functions for admin panel actions
+ *
+ * Class Ajax
+ */
 class Ajax
 {
+    /**
+     * @param string $action
+     * @return string
+     **/
     public function getAjaxAction($action){
         if ($action == 'getPecPoints'){
             $result = self::getPecPoints();
@@ -31,37 +40,58 @@ class Ajax
         echo $result;
     }
 
+    /**
+     * @return string
+     **/
     private function getPecPoints(){
         $tkPrice = new Pec();
         return $tkPrice->initAutoAddPointsData();
     }
 
+    /**
+     * @return string
+     **/
     private function getSdekPoints(){
         $tkPrice = new Sdek();
         return $tkPrice->initAutoAddPointsData();
     }
 
+    /**
+     * @return string
+     **/
     private function getJdePoints(){
         $tkPrice = new Jde();
         return $tkPrice->initAutoAddPointsData();
     }
 
+    /**
+     * @return string
+     **/
     private function getEnergyPoints(){
         $tkPrice = new Energy();
         return $tkPrice->initAutoAddPointsData();
     }
 
+    /**
+     * @return string
+     **/
     private function getDellinPoints(){
         $tkPrice = new Dellin();
         return $tkPrice->initAutoAddPointsData();
     }
 
+    /**
+     * @return string
+     **/
     private function clearPoints()
     {
         Dbmethods::clearPoints();
         return 'Success';
     }
 
+    /**
+     * @return string
+     **/
     private function clearPrices()
     {
         Dbmethods::clearInfo();

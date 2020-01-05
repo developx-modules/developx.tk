@@ -5,9 +5,14 @@ use Bitrix\Main\Application;
 use Bitrix\Main\ArgumentOutOfRangeException;
 use Developx\Tk\Options;
 
-
+/**
+ * Class Energy
+ */
 class Energy extends TksBase
 {
+    /**
+     * @var array Api methods
+     */
     public $methods = [
         'citys' => 'https://mainapi.nrg-tk.ru/v3/cities',
         'price' => 'https://mainapi.nrg-tk.ru/v3/price',

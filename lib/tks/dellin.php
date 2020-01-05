@@ -5,8 +5,14 @@ use Bitrix\Main\Application;
 use Bitrix\Main\ArgumentOutOfRangeException;
 use Developx\Tk\Options;
 
+/**
+ * Class Dellin
+ */
 class Dellin extends TksBase
 {
+    /**
+     * @var array Api methods
+     */
     public $methods = [
         'terminals' => 'https://api.dellin.ru/v3/public/terminals.json',
         'price' => 'https://api.dellin.ru/v1/public/calculator.json',

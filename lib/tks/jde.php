@@ -4,8 +4,14 @@ namespace Developx\Tk\Tks;
 use Bitrix\Main\Application;
 use Bitrix\Main\ArgumentOutOfRangeException;
 
+/**
+ * Class Jde
+ */
 class Jde extends TksBase
 {
+    /**
+     * @var array Api methods
+     */
     public $methods = [
         'calc' => 'https://api.jde.ru/vD/calculator/price',
         'points' => 'https://api.jde.ru/vD/jMeter/MstByKladr',

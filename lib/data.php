@@ -7,8 +7,14 @@ use Developx\Tk\Tks\Pec;
 use Developx\Tk\Tks\Sdek;
 use Developx\Tk\Tks\Jde;
 
+/**
+ * Class Data
+ */
 class Data
 {
+    /**
+     * @return array
+     **/
     public function getLocations()
     {
         $res = \Bitrix\Sale\Location\LocationTable::getList(array(
@@ -40,6 +46,11 @@ class Data
         return $arResult;
     }
 
+    /**
+     * @param integer $id
+     * @param boolean $code
+     * @return array
+     **/
     public function getLocationById($id, $code = false)
     {
         $filter['=NAME.LANGUAGE_ID'] = LANGUAGE_ID;
@@ -71,6 +82,10 @@ class Data
         return $arResult;
     }
 
+    /**
+     * @param integer $locId
+     * @return array
+     **/
     public function getPrices($locId){
         $tkLocation = $this->getLocationById($locId);
 
@@ -120,6 +135,10 @@ class Data
         return $arResult;
     }
 
+    /**
+     * @param integer $locId
+     * @return array
+     **/
     public function getPoints($locId){
          $points = Dbmethods::getPointByLoc($locId);
          foreach ($points as $key => $point){
@@ -130,6 +149,10 @@ class Data
          return $points;
     }
 
+    /**
+     * @param string $time
+     * @return string
+     **/
     private function formatTime($time)
     {
         if (strpos($time, ';') != false){
@@ -141,20 +164,35 @@ class Data
         return $result;
     }
 
+    /**
+     * @param string $digit
+     * @param array $expr
+     * @param boolean $onlyword
+     * @return string
+     **/
     private function declension($digit, $expr, $onlyword = true)
     {
-        if (!is_array($expr)) $expr = array_filter(explode(' ', $expr));
-        if(empty($expr[2])) $expr[2] = $expr[1];
-        $i=preg_replace('/[^0-9]+/s', '', $digit) % 100;
-        if($onlyword) $digit = '';
-        if($i >= 5 && $i <= 20)
-            $res = $digit . ' ' .$expr[2];
-        else
-        {
+        if (!is_array($expr)){
+            $expr = array_filter(explode(' ', $expr));
+        }
+        if(empty($expr[2])){
+            $expr[2] = $expr[1];
+        }
+        $i = preg_replace('/[^0-9]+/s', '', $digit) % 100;
+        if($onlyword){
+            $digit = '';
+        }
+        if($i >= 5 && $i <= 20) {
+            $res = $digit . ' ' . $expr[2];
+        } else {
             $i %= 10;
-            if($i == 1) $res =$digit . ' ' . $expr[0];
-            elseif($i >= 2 && $i <= 4) $res = $digit . ' ' . $expr[1];
-            else $res = $digit . ' ' . $expr[2];
+            if($i == 1){
+                $res =$digit . ' ' . $expr[0];
+            } elseif($i >= 2 && $i <= 4) {
+                $res = $digit . ' ' . $expr[1];
+            } else {
+                $res = $digit . ' ' . $expr[2];
+            }
         }
         return trim($res);
     }

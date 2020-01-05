@@ -1,6 +1,9 @@
 <?
 namespace Developx\Tk;
 
+/**
+ * Class Main
+ */
 class Main
 {
     protected static $_instance;
@@ -8,6 +11,11 @@ class Main
     public static $prices = [];
     public static $points = [];
 
+    /**
+     * Constructor
+     *
+     * @param $locId
+     **/
     public function __construct($locId)
     {
         $data = new Data();
@@ -25,6 +33,10 @@ class Main
         $this->prices = $tkPriceTimeInfo;
     }
 
+    /**
+     * @param $locId
+     * @return object
+     **/
     public static function getInstance($locId)
     {
         if (null === self::$_instance) {

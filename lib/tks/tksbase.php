@@ -5,6 +5,9 @@ use Developx\Tk\Dbmethods;
 use Developx\Tk\Data;
 use Developx\Tk\Options;
 
+/**
+ * Class TksBase
+ */
 abstract class TksBase
 {
     abstract function getPriceTime($cityName, $options, $cityFrom);
@@ -53,11 +56,7 @@ abstract class TksBase
         $exCode = $this->getLocationExternal();
         $pointsData = $this->getAllPoints();
         $pointsPreared = $this->preparePoints($pointsData);
-
-
-
         $pointsResult = [];
-
         $tk = new Data();
         $locations = $tk->getLocations();
         foreach ($locations as $loc){

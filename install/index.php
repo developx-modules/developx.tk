@@ -40,10 +40,17 @@ class developx_tk extends CModule
 
     public function __construct()
     {
+        $arModuleVersion = [];
+
+        include __DIR__ . '/version.php';
+        if (is_array($arModuleVersion) && array_key_exists('VERSION', $arModuleVersion))
+        {
+            $this->MODULE_VERSION = $arModuleVersion['VERSION'];
+            $this->MODULE_VERSION_DATE = $arModuleVersion['VERSION_DATE'];
+        }
+
         Loc::loadMessages(__FILE__);
         $this->MODULE_ID = 'developx.tk';
-        $this->MODULE_VERSION = '1.0.0';
-        $this->MODULE_VERSION_DATE = '2019-08-14 00:00:00';
         $this->MODULE_NAME = Loc::getMessage('dx_tk_module_name');
         $this->MODULE_DESCRIPTION = Loc::getMessage('dx_tk_module_description');
         $this->MODULE_GROUP_RIGHTS = 'N';
