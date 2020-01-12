@@ -1,8 +1,5 @@
 <?php
 namespace Developx\Tk\Tks;
-
-use Bitrix\Main\Application;
-use Bitrix\Main\ArgumentOutOfRangeException;
 use Developx\Tk\Options;
 
 require_once('sdk-pec/pecom_kabinet.php');
@@ -19,7 +16,6 @@ class Pec extends TksBase
         'calc' => 'http://calc.pecom.ru/bitrix/components/pecom/calc/ajax.php',
         'towns' => 'https://new.pecom.ru/ru/calc/towns.php',
     ];
-    public $cityIdFrom = 463;
     public $tkName = 'pec';
     public $externalCode = 'PEC_ID';
     public $apiKeyCode = 'PEC_KEY';
@@ -45,44 +41,16 @@ class Pec extends TksBase
         ];
     }
 
-    public function getAllTowns(){
-        $towns = $this->getData(
-            $this->methods['towns'],
-            [],
-            'post'
-        );
-        $towns = json_decode($towns,1);
-    }
-
-    public function getPointByTitle ($title)
-    {
-        $sdk = new \PecomKabinet('user', Options::getApiKey($this->apiKeyCode));
-        $result = $sdk->call(
-            'branches',
-            'findbytitle',
-            ['title' => $title],
-            true
-        );
-        $sdk->close();
-        return $result;
-    }
-
     public function getAllPoints()
     {
-        // Создание экземпляра класса
         $sdk = new \PecomKabinet('user', Options::getApiKey($this->apiKeyCode));
-
-        // Вызов метода
         $result = $sdk->call(
             'branches',
             'all',
             [],
             true
         );
-
-        // Освобождение ресурсов
         $sdk->close();
-
         return $result;
     }
 
@@ -90,10 +58,6 @@ class Pec extends TksBase
     {
         $preparePoints = [];
         foreach ($points['branches'] as $terminal){
-            /*if ($terminal['bitrixId'] == 463) {
-                pre($terminal);
-                die();
-            }*/
             foreach ($terminal['divisions'] as $division) {
 
                 foreach ($division['warehouses'] as $pt) {

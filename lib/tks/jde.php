@@ -1,9 +1,6 @@
 <?php
 namespace Developx\Tk\Tks;
 
-use Bitrix\Main\Application;
-use Bitrix\Main\ArgumentOutOfRangeException;
-
 /**
  * Class Jde
  */
@@ -20,7 +17,6 @@ class Jde extends TksBase
     ];
     public $tkName = 'jde';
     public $externalCode = 'JDE_ID';
-    public $tkTitle = 'ЖелДорЭкспедиция';
 
     public function getPriceTime($cityTo, $options, $cityFrom){
 
@@ -39,19 +35,6 @@ class Jde extends TksBase
             "PRICE" => $price['price'],
             "TIME" => $price['mindays'].';'.$price['maxdays']
         ];
-    }
-
-    public function getSchedule($code)
-    {
-        $points = $this->getData(
-            $this->methods['schedule'],
-            [
-                'code' => $code,
-            ],
-            'get'
-        );
-        $points = json_decode($points,true);
-        return $points;
     }
 
     public function getAllPoints(){

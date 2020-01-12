@@ -1,8 +1,5 @@
 <?php
 namespace Developx\Tk\Tks;
-
-use Bitrix\Main\Application;
-use Bitrix\Main\ArgumentOutOfRangeException;
 use Developx\Tk\Options;
 
 /**
@@ -21,7 +18,6 @@ class Dellin extends TksBase
     public $tkName = 'dellin';
     public $externalCode = 'DL_KLADR';
     public $apiKeyCode = 'DL_KEY';
-    public $tkTitle = 'Деловые линии';
 
     public function getPriceTime($kladrTo, $options, $cityFrom){
 

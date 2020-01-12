@@ -236,9 +236,7 @@ if ($USER->IsAdmin()):
 <?endif;?>
 
 <script>
-
 $( document ).ready(function() {
     DevelopXTk_ = new DevelopXTk();
 });
-
 </script>

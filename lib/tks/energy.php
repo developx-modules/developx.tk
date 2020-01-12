@@ -1,8 +1,5 @@
 <?php
 namespace Developx\Tk\Tks;
-
-use Bitrix\Main\Application;
-use Bitrix\Main\ArgumentOutOfRangeException;
 use Developx\Tk\Options;
 
 /**
@@ -20,7 +17,6 @@ class Energy extends TksBase
     public $tkName = 'energy';
     public $externalCode = 'ENERGY_ID';
     public $apiKeyCode = 'ENERGY_API_KEY';
-    public $tkTitle = 'Энергия';
 
     public function getPriceTime($cityTo, $options, $cityFrom){
         $price = $this->getData(

@@ -8,33 +8,23 @@ class Main
 {
     protected static $_instance;
 
-    public static $prices = [];
-    public static $points = [];
+    public static $prices = []; //массив с ценами
+    public static $points = []; //массив с пунктами транспотрных компаний
 
     /**
      * Constructor
      *
-     * @param $locId
+     * @param integer $locId
      **/
     public function __construct($locId)
     {
         $data = new Data();
-        $tkPriceTimeInfo = $data->getPrices($locId);
-        $tkPoints = $data->getPoints($locId);
-
-        foreach ($tkPoints as $key => $point){
-            $point['TITLE'] = $tkPriceTimeInfo[$point['TK']]['TITLE'];
-            $point['PRICE'] = round($tkPriceTimeInfo[$point['TK']]['PRICE']);
-            $point['TIME'] = $tkPriceTimeInfo[$point['TK']]['TIME'];
-            $point['TIME_FORMAT'] = $tkPriceTimeInfo[$point['TK']]['TIME_FORMAT'];
-            $tkPoints[$key] = $point;
-        }
-        $this->points = $tkPoints;
-        $this->prices = $tkPriceTimeInfo;
+        self::$prices = $data->getPrices($locId);
+        self::$points = $data->getPoints($locId);
     }
 
     /**
-     * @param $locId
+     * @param integer $locId
      * @return object
      **/
     public static function getInstance($locId)

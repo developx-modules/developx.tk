@@ -14,7 +14,7 @@ class Options
     public static $moduleName = 'developx.tk';
 
     /**
-     * @param $keyCode
+     * @param string $keyCode
      * @return string
      **/
     public function getApiKey($keyCode)

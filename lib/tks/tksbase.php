@@ -3,23 +3,41 @@ namespace Developx\Tk\Tks;
 
 use Developx\Tk\Dbmethods;
 use Developx\Tk\Data;
-use Developx\Tk\Options;
 
 /**
  * Class TksBase
  */
 abstract class TksBase
 {
+    /**
+     * @param string $cityName
+     * @param array $options
+     * @param string $cityFrom
+     **/
     abstract function getPriceTime($cityName, $options, $cityFrom);
 
-    /*
-     * Класы для обновления пунктов самовывоза в бд
-     * */
+    /**
+     * Prepare data from tk api for import
+     *
+     * @param array
+     * @return array
+     **/
     abstract function preparePoints($points);
+
+    /**
+     * All tk points from api
+     *
+     * @return array
+    **/
     abstract function getAllPoints();
 
-    public $moduleName = 'developx.tk';
-
+    /**
+     * @param string $link
+     * @param boolean $fields
+     * @param string $type
+     * @param boolean $headers
+     * @return array
+     **/
     public function getData($link, $fields = false, $type = 'post', $headers = false)
     {
         $ch = curl_init();
@@ -43,14 +61,17 @@ abstract class TksBase
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $string = curl_exec($ch);
+        $result = curl_exec($ch);
         if(curl_exec($ch) === false){
             echo 'Ошибка curl: ' . curl_error($ch);
         }
         curl_close($ch);
-        return $string;
+        return $result;
     }
 
+    /**
+     * @return string
+     **/
     public function initAutoAddPointsData()
     {
         $exCode = $this->getLocationExternal();
@@ -90,6 +111,9 @@ abstract class TksBase
         return $result;
     }
 
+    /**
+     * @param array $pointsArray
+     **/
     public function updatePointsDB($pointsArray)
     {
         foreach ($pointsArray as $point) {
@@ -101,6 +125,11 @@ abstract class TksBase
         }
     }
 
+    /**
+     * Get location external or add new if not exist
+     *
+     * @return integer
+     **/
     public function getLocationExternal()
     {
         $code = $this->externalCode;
@@ -129,6 +158,11 @@ abstract class TksBase
         }
     }
 
+    /**
+     * @param array $location
+     * @param string $val
+     * @param integer $exId
+     **/
     public function setLocationExternal($location, $val, $exId)
     {
         if (empty($location['EXTERNAL'][$this->externalCode]) && !empty($val)){
@@ -146,6 +180,4 @@ abstract class TksBase
             );
         }
     }
-
-
 }

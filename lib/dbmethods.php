@@ -42,7 +42,7 @@ class Dbmethods
     }
 
     /**
-     * @param int $locId
+     * @param integer $locId
      * @return array
      **/
     public static function getPointByLoc($locId)
