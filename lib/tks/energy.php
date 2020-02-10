@@ -15,6 +15,7 @@ class Energy extends TksBase
         'price' => 'https://mainapi.nrg-tk.ru/v3/price',
     ];
     public $tkName = 'energy';
+    public $tkTitle = 'Энергия';
     public $externalCode = 'ENERGY_ID';
     public $apiKeyCode = 'ENERGY_API_KEY';
 

@@ -126,5 +126,13 @@ class Options
         $result['volume'] = $result['length'] * $result['wide'] * $result['height'];
         return $result;
     }
+
+    /**
+     * @return integer
+     **/
+    public function getCityTypeId()
+    {
+        return $this->arOptions['CITY_TYPE_ID'];
+    }
 }
 ?>

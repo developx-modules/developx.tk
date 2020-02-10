@@ -104,10 +104,11 @@ class Data
      **/
     public function getLocations()
     {
+        $optionsObj = Options::getInstance();
         $res = \Bitrix\Sale\Location\LocationTable::getList(array(
             'filter' => array(
                 '=NAME.LANGUAGE_ID' => LANGUAGE_ID,
-                'TYPE_ID' => $this->arOptions['CITY_TYPE_ID'],
+                'TYPE_ID' => $optionsObj->getCityTypeId(),
             ),
             'select' => array(
                 '*',

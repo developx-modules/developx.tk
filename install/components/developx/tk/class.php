@@ -3,50 +3,53 @@
 use Bitrix\Main\Loader;
 use Developx\Tk\Tkmain;
 use Bitrix\Main\Context;
-use Developx\Tk\Main;
-use Developx\Tk\Data;
 
 Loader::includeModule('developx.tk');
 
-class DevelopxTk extends \CBitrixComponent
+class DevelopxTkComponent extends \CBitrixComponent
 {
+    private $tkDataObj;
     private function getRequest()
     {
         return Context::getCurrent()->getRequest();
     }
 
-    private function getData($locId)
+    private function getPoints()
     {
-        $tkMain = Main::getInstance($locId);
-        return $tkMain->points;
+        return $this->tkDataObj->getPoints($this->arResult['CITY_ID']);
     }
 
-    private function getLocation($locId)
+    private function getPrices()
     {
-        $tkData = new Data();
-        return $tkData->getLocationById($locId);
+        return $this->tkDataObj->getPrices($this->arResult['CITY_ID']);
+    }
+
+    private function getCurrentLocation()
+    {
+        return $this->tkDataObj->getLocationById($this->arResult['CITY_ID']);
     }
 
     private function getLocations()
     {
-        $tkData = new Data();
-        return $tkData->getLocations();
+        return $this->tkDataObj->getLocations();
     }
+
 
     public function executeComponent()
     {
         $request = $this->getRequest();
-        $cityId = false;
         if (!empty($request['CITY_ID'])){
-            $cityId = $request['CITY_ID'];
+            $this->arResult['CITY_ID'] = $request['CITY_ID'];
         }else{
-            $cityId = $this->arParams['CITY_DEFAULT'];
+            $this->arResult['CITY_ID'] = $this->arParams['CITY_DEFAULT'];
         }
-        if ($cityId) {
-            $this->arResult['ITEMS'] = $this->getData($cityId);
-            $this->arResult['LOCATION'] = $this->getLocation($cityId);
+        if (isset($this->arResult['CITY_ID'])) {
+            $this->tkDataObj = new Developx\Tk\Data();
+            $this->arResult['POINTS'] = $this->getPoints();
+            $this->arResult['PRICES'] = $this->getPrices();
+            $this->arResult['CURRENT_LOCATION'] = $this->getCurrentLocation();
             $this->arResult['LOCATIONS'] = $this->getLocations();
-            $this->includeComponentTemplate();
         }
+        $this->includeComponentTemplate();
     }
 }

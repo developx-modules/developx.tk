@@ -17,6 +17,7 @@ class Pec extends TksBase
         'towns' => 'https://new.pecom.ru/ru/calc/towns.php',
     ];
     public $tkName = 'pec';
+    public $tkTitle = 'ПЭК';
     public $externalCode = 'PEC_ID';
     public $apiKeyCode = 'PEC_KEY';
 

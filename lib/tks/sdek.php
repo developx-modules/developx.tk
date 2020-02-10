@@ -14,6 +14,7 @@ class Sdek extends TksBase
         'pvzlist' => 'https://integration.cdek.ru/pvzlist.php?type=ALL'
     ];
     public $tkName = 'sdek';
+    public $tkTitle = 'СДЕК';
     public $externalCode = 'SDEK_ID';
 
     public function getPriceTime($cityTo, $cityFrom){

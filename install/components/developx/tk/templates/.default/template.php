@@ -3,18 +3,19 @@
 <?$APPLICATION->AddHeadScript($templateFolder."/chosen.jquery.min.js");?>
 <?$APPLICATION->AddHeadScript($templateFolder."/chosen.jquery.min.js");?>
 <?$APPLICATION->SetAdditionalCSS($templateFolder."/chosen.min.css");?>
+
 <script src="https://api-maps.yandex.ru/2.1/?apikey=<?=$arParams['YANDEX_API_KEY']?>&lang=ru_RU" type="text/javascript">
 </script>
 <script>
     $( document ).ready(function(){
-        DevelopxTK_ = new DevelopxTK(<?=CUtil::PhpToJSObject($arResult['ITEMS'], false, true)?>, '<?=$arResult['LOCATION']['LOC_NAME']?>', '<?=$templateFolder?>');
+        DevelopxTK_ = new DevelopxTK(<?=CUtil::PhpToJSObject($arResult['POINTS'], false, true)?>, <?=CUtil::PhpToJSObject($arResult['PRICES'], false, true)?>, '<?=$arResult['CURRENT_LOCATION']['LOC_NAME']?>', '<?=$templateFolder?>');
     });
 </script>
 
 <div class="map-box">
     <div class="row">
         <div class="col-md-6">
-            <div class="title">Пункты самовывоза в г.<a href="#" class="header__city cityNameJs" data-toggle="modal" data-target="#cityModal"><?=$arResult['LOCATION']['LOC_NAME']?></a></div>
+            <div class="title">Пункты самовывоза в г.<a href="#" class="header__city cityNameJs" data-toggle="modal" data-target="#cityModal"><?=$arResult['CURRENT_LOCATION']['LOC_NAME']?></a></div>
         </div>
         <div class="col-md-6 text-right">
             <div class="map-nav nav justify-content-end">

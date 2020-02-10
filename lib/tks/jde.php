@@ -16,6 +16,7 @@ class Jde extends TksBase
         'schedule' => 'https://api.jde.ru/vD/geo/schedule'
     ];
     public $tkName = 'jde';
+    public $tkTitle = 'ЖДЕ';
     public $externalCode = 'JDE_ID';
 
     public function getPriceTime($cityTo, $cityFrom){
