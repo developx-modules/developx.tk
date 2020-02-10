@@ -83,12 +83,12 @@ class Dbmethods
     }
 
     /**
-     * Get saved transport companys for location
+     * Get cached transport companys for location
      *
      * @param integer $locId
      * @return array
      **/
-    public function getInfo($locId){
+    public function getCachedData($locId){
         $arResult = [];
         $result = DeliveryInfoTable::getList(array(
             'select' => array('*'),
@@ -105,7 +105,7 @@ class Dbmethods
      * @param array $data
      * @return integer
      **/
-    public function saveInfo($data){
+    public function cacheData($data){
         $result = DeliveryInfoTable::add($data);
 
         if ($result->isSuccess())

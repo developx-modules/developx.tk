@@ -13,6 +13,93 @@ use Developx\Tk\Tks\Jde;
 class Data
 {
     /**
+     * @param integer $locId
+     * @return array
+     **/
+    public function getPrices($locId){
+        $tks = [
+            'pec' => new Pec(),
+            'sdek' => new Sdek(),
+            'jde' => new Jde(),
+            'dellin' => new Dellin(),
+            'energy' => new Energy()
+        ];
+        $dbCachedData = Dbmethods::getCachedData($locId);
+        $cityTo = $this->getLocationById($locId);
+        $cityFrom = $this->getCityFrom();
+
+        $arResult = [];
+        foreach ($tks as $tk){
+            if (
+                empty($cityFrom['EXTERNAL'][$tk->externalCode]) ||
+                empty($cityTo['EXTERNAL'][$tk->externalCode])
+            ){
+                continue;
+            }
+
+            if (empty($dbCachedData[$tk->tkName])) {
+                $tkResult = $tk->getPriceTime($cityTo['EXTERNAL'][$tk->externalCode], $cityFrom['EXTERNAL'][$tk->externalCode]);
+                if ($this->checkPriceAndTime($tkResult)) {
+                    Dbmethods::cacheData([
+                        'LOC_ID' => $locId,
+                        'TK' => $tk->tkName,
+                        'TIME' => $tkResult['TIME'],
+                        'PRICE' => $tkResult['PRICE']
+                    ]);
+                }
+            } else {
+                $tkResult = $dbCachedData[$tk->tkName];
+            }
+
+            if ($this->checkPriceAndTime($tkResult)) {
+                $arResult[$tk->tkName] = [
+                    'CODE' => $tk->tkName,
+                    'TITLE' => $tk->tkTitle,
+                    'PRICE' => $tkResult['PRICE'],
+                    'TIME' => $tkResult['TIME'],
+                    'TIME_FORMAT' => $this->formatTime($tkResult['TIME'])
+                ];
+            }
+        }
+        return $arResult;
+    }
+
+    /**
+     * @param integer $locId
+     * @return array
+     **/
+    public function getPoints($locId){
+        $points = Dbmethods::getPointByLoc($locId);
+        foreach ($points as $key => $point) {
+            $coords = explode(':', $point['COORD']);
+            $points[$key]['GPS_N'] = $coords[0];
+            $points[$key]['GPS_S'] = $coords[1];
+        }
+        return $points;
+    }
+
+    /**
+     * @param array $result
+     * @return boolean
+     **/
+    private function checkPriceAndTime($result)
+    {
+        if (!empty($result['PRICE']) && !empty($result['TIME'])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return array
+     **/
+    private function getCityFrom()
+    {
+        $cityFromId = \COption::GetOptionString('sale','location',false);
+        return $this->getLocationById($cityFromId, true);
+    }
+
+    /**
      * @return array
      **/
     public function getLocations()
@@ -20,7 +107,7 @@ class Data
         $res = \Bitrix\Sale\Location\LocationTable::getList(array(
             'filter' => array(
                 '=NAME.LANGUAGE_ID' => LANGUAGE_ID,
-                'TYPE_ID' => 5,
+                'TYPE_ID' => $this->arOptions['CITY_TYPE_ID'],
             ),
             'select' => array(
                 '*',
@@ -38,10 +125,11 @@ class Data
         while ($item = $res->fetch())
         {
             $item['EXTERNAL'][$item['SALE_LOCATION_LOCATION_EXTERNAL_SERVICE_CODE']] = $item['SALE_LOCATION_LOCATION_EXTERNAL_XML_ID'];
-            if (empty($arResult[$item['ID']]))
+            if (empty($arResult[$item['ID']])) {
                 $arResult[$item['ID']] = $item;
-            else
+            } else {
                 $arResult[$item['ID']]['EXTERNAL'][$item['SALE_LOCATION_LOCATION_EXTERNAL_SERVICE_CODE']] = $item['SALE_LOCATION_LOCATION_EXTERNAL_XML_ID'];
+            }
         }
         return $arResult;
     }
@@ -54,9 +142,9 @@ class Data
     public function getLocationById($id, $code = false)
     {
         $filter['=NAME.LANGUAGE_ID'] = LANGUAGE_ID;
-        if ($code){
+        if ($code) {
             $filter['CODE'] = $id;
-        }else{
+        } else {
             $filter['ID'] = $id;
         }
         $res = \Bitrix\Sale\Location\LocationTable::getList(array(
@@ -74,80 +162,16 @@ class Data
         while ($item = $res->fetch())
         {
             $item['EXTERNAL'][$item['SALE_LOCATION_LOCATION_EXTERNAL_SERVICE_CODE']] = $item['SALE_LOCATION_LOCATION_EXTERNAL_XML_ID'];
-            if (empty($arResult))
+            if (empty($arResult)) {
                 $arResult = $item;
-            else
+            } else {
                 $arResult['EXTERNAL'][$item['SALE_LOCATION_LOCATION_EXTERNAL_SERVICE_CODE']] = $item['SALE_LOCATION_LOCATION_EXTERNAL_XML_ID'];
-        }
-        return $arResult;
-    }
-
-    /**
-     * @param integer $locId
-     * @return array
-     **/
-    public function getPrices($locId){
-        $tkLocation = $this->getLocationById($locId);
-
-        $tks = [
-            'pec' => new Pec(),
-            'sdek' => new Sdek(),
-            'jde' => new Jde(),
-            'dellin' => new Dellin(),
-            'energy' => new Energy()
-        ];
-        $dbInfo = Dbmethods::getInfo($locId);
-        $options = Options::getCargoOptions();
-        $cityFromId = \COption::GetOptionString('sale','location',false);
-        $cityFrom = $this->getLocationById($cityFromId, true);
-        $arResult = [];
-        foreach ($tks as $tk){
-            if (empty($cityFrom['EXTERNAL'][$tk->externalCode])) continue;
-            if (empty($tkLocation['EXTERNAL'][$tk->externalCode])) continue;
-
-            if (empty($dbInfo[$tk->tkName])){
-                $tkPriceTime = $tk->getPriceTime($tkLocation['EXTERNAL'][$tk->externalCode], $options, $cityFrom['EXTERNAL'][$tk->externalCode]);
-                $price = $tkPriceTime['PRICE'];
-                $time = $tkPriceTime['TIME'];
-                if (!empty($price) && !empty($time)) {
-                    Dbmethods::saveInfo([
-                        'LOC_ID' => $locId,
-                        'TK' => $tk->tkName,
-                        'TIME' => $time,
-                        'PRICE' => $price
-                    ]);
-                }
-            }else{
-                $price = $dbInfo[$tk->tkName]['PRICE'];
-                $time = $dbInfo[$tk->tkName]['TIME'];
-            }
-
-            if (!empty($price) && !empty($time)) {
-                $arResult[$tk->tkName] = [
-                    'CODE' => $tk->tkName,
-                    'TITLE' => $tk->tkTitle,
-                    'PRICE' => $price,
-                    'TIME' => $time,
-                    'TIME_FORMAT' => $this->formatTime($time)
-                ];
             }
         }
         return $arResult;
     }
 
-    /**
-     * @param integer $locId
-     * @return array
-     **/
-    public function getPoints($locId){
-         $points = Dbmethods::getPointByLoc($locId);
-         foreach ($points as $key => $point){
-             $coords = explode(':', $point['COORD']);
-             $points[$key]['GPS_N'] = $coords[0];
-             $points[$key]['GPS_S'] = $coords[1];
-         }
-         return $points;
-    }
+
 
     /**
      * @param string $time
@@ -155,7 +179,7 @@ class Data
      **/
     private function formatTime($time)
     {
-        if (strpos($time, ';') != false){
+        if (strpos($time, ';') != false) {
             $times = explode(';', $time);
             $result = $times[0] . ' - ' . $times[1] . ' ' . $this->declension($times[1], ['день', 'дня', 'дней']);
         }else{
@@ -172,22 +196,22 @@ class Data
      **/
     private function declension($digit, $expr, $onlyword = true)
     {
-        if (!is_array($expr)){
+        if (!is_array($expr)) {
             $expr = array_filter(explode(' ', $expr));
         }
-        if(empty($expr[2])){
+        if (empty($expr[2])) {
             $expr[2] = $expr[1];
         }
         $i = preg_replace('/[^0-9]+/s', '', $digit) % 100;
-        if($onlyword){
+        if ($onlyword) {
             $digit = '';
         }
-        if($i >= 5 && $i <= 20) {
+        if ($i >= 5 && $i <= 20) {
             $res = $digit . ' ' . $expr[2];
         } else {
             $i %= 10;
             if($i == 1){
-                $res =$digit . ' ' . $expr[0];
+                $res = $digit . ' ' . $expr[0];
             } elseif($i >= 2 && $i <= 4) {
                 $res = $digit . ' ' . $expr[1];
             } else {

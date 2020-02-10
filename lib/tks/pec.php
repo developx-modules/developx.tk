@@ -20,7 +20,8 @@ class Pec extends TksBase
     public $externalCode = 'PEC_ID';
     public $apiKeyCode = 'PEC_KEY';
 
-    public function getPriceTime($cityTo, $options, $cityFrom){
+    public function getPriceTime($cityTo, $cityFrom){
+        $options = $this->getCargoOptions();
         $price = $this->getData(
             $this->methods['calc'],
             [
@@ -43,7 +44,7 @@ class Pec extends TksBase
 
     public function getAllPoints()
     {
-        $sdk = new \PecomKabinet('user', Options::getApiKey($this->apiKeyCode));
+        $sdk = new \PecomKabinet('user', $this->getApiKey());
         $result = $sdk->call(
             'branches',
             'all',

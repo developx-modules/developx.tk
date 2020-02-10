@@ -10,8 +10,68 @@ use Developx\Tk\Data;
  */
 class Options
 {
+    protected static $_instance;
+
+    /** @var array */
+    public $arOptions = [
+        'CITY_TYPE_ID' => false,
+        'DAYS_DOP' => false,
+        'PRICE_DOP' => false,
+        'DEF_WEIGHT' => false,
+        'DEF_LENGTH' => false,
+        'DEF_WIDE' => false,
+        'DEF_HEIGHT' => false,
+        'PEC_ACTIVE' => false,
+        'PEC_KEY' => false,
+        'CDEK_ACTIVE' => false,
+        'DL_ACTIVE' => false,
+        'DL_KEY' => false,
+        'JDE_ACTIVE' => false,
+        'ENERGY_ACTIVE' => false,
+        'ENERGY_API_KEY' => false,
+    ];
+
     /** @var string */
-    public static $moduleName = 'developx.tk';
+    public $moduleName = 'developx.tk';
+
+    public static function getInstance()
+    {
+        if (null === self::$_instance) {
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
+
+    public function __construct()
+    {
+        $this->time = time();
+        foreach ($this->arOptions as $key => $prop){
+            $this->arOptions[$key] = \COption::GetOptionString($this->moduleName, $key);
+        }
+
+        if (!($this->arOptions['DAYS_DOP'])) {
+            $this->arOptions['DAYS_DOP'] = 0;
+        }
+        if (!($this->arOptions['PRICE_DOP'])) {
+            $this->arOptions['PRICE_DOP'] = 0;
+        }
+
+        if (!($this->arOptions['DEF_WEIGHT'])) {
+            $this->arOptions['DEF_WEIGHT'] = 1;
+        }
+
+        if (!($this->arOptions['DEF_LENGTH'])) {
+            $this->arOptions['DEF_LENGTH'] = 0.2;
+        }
+
+        if (!($this->arOptions['DEF_WIDE'])) {
+            $this->arOptions['DEF_WIDE'] = 0.2;
+        }
+
+        if (!($this->arOptions['DEF_HEIGHT'])) {
+            $this->arOptions['DEF_HEIGHT'] = 0.2;
+        }
+    }
 
     /**
      * @param string $keyCode
@@ -19,7 +79,7 @@ class Options
      **/
     public function getApiKey($keyCode)
     {
-        return \COption::GetOptionString(self::$moduleName, $keyCode);
+        return $this->arOptions[$keyCode];
     }
 
     /**
@@ -27,8 +87,7 @@ class Options
      **/
     private function getWeight()
     {
-        $result = \COption::GetOptionString(self::$moduleName, 'DEF_WEIGHT');
-        return $result;
+        return $this->arOptions['DEF_WEIGHT'];
     }
 
     /**
@@ -36,8 +95,7 @@ class Options
      **/
     private function getLength()
     {
-        $result = \COption::GetOptionString(self::$moduleName, 'DEF_LENGTH');
-        return $result;
+        return $this->arOptions['DEF_LENGTH'];
     }
 
     /**
@@ -45,8 +103,7 @@ class Options
      **/
     private function getWide()
     {
-        $result = \COption::GetOptionString(self::$moduleName, 'DEF_WIDE');
-        return $result;
+        return $this->arOptions['DEF_WIDE'];
     }
 
     /**
@@ -54,8 +111,7 @@ class Options
      **/
     private function getHeight()
     {
-        $result = \COption::GetOptionString(self::$moduleName, 'DEF_HEIGHT');
-        return $result;
+        return $this->arOptions['DEF_HEIGHT'];
     }
 
     /**

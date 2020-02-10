@@ -18,8 +18,8 @@ class Jde extends TksBase
     public $tkName = 'jde';
     public $externalCode = 'JDE_ID';
 
-    public function getPriceTime($cityTo, $options, $cityFrom){
-
+    public function getPriceTime($cityTo, $cityFrom){
+        $options = $this->getCargoOptions();
         $price = $this->getData(
             $this->methods['calc'],
             [

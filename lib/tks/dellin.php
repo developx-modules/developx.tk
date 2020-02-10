@@ -19,12 +19,12 @@ class Dellin extends TksBase
     public $externalCode = 'DL_KLADR';
     public $apiKeyCode = 'DL_KEY';
 
-    public function getPriceTime($kladrTo, $options, $cityFrom){
-
+    public function getPriceTime($kladrTo, $cityFrom){
+        $options = $this->getCargoOptions();
         $price = $this->getData(
             $this->methods['price'],
             [
-                'appkey' => Options::getApiKey($this->apiKeyCode),
+                'appkey' => $this->getApiKey(),
                 'derivalPoint' => $cityFrom,
                 'arrivalPoint' => $kladrTo,
                 'sizedVolume' => $options['volume'],
@@ -36,7 +36,7 @@ class Dellin extends TksBase
         );
         $price = json_decode($price, true);
         return [
-            "PRICE" => $price['price'],
+            "PRICE" => round($price['price']),
             "TIME" => $price['time']['value']
         ];
     }
@@ -45,7 +45,7 @@ class Dellin extends TksBase
         $cityArr = $this->getData(
             $this->methods['find_city'],
             [
-                'appkey' => Options::getApiKey($this->apiKeyCode),
+                'appkey' => $this->getApiKey(),
                 'q' => $cityName,
                 'limit' => 1
             ],
@@ -58,7 +58,7 @@ class Dellin extends TksBase
         $terminals = $this->getData(
             $this->methods['terminals'],
             [
-                'appkey' => Options::getApiKey($this->apiKeyCode)
+                'appkey' => $this->getApiKey()
             ],
             'json'
         );

@@ -3,6 +3,7 @@ namespace Developx\Tk\Tks;
 
 use Developx\Tk\Dbmethods;
 use Developx\Tk\Data;
+use Developx\Tk\Options;
 
 /**
  * Class TksBase
@@ -10,11 +11,10 @@ use Developx\Tk\Data;
 abstract class TksBase
 {
     /**
-     * @param string $cityName
-     * @param array $options
+     * @param string $cityTo
      * @param string $cityFrom
      **/
-    abstract function getPriceTime($cityName, $options, $cityFrom);
+    abstract function getPriceTime($cityTo, $cityFrom);
 
     /**
      * Prepare data from tk api for import
@@ -179,5 +179,23 @@ abstract class TksBase
                 )
             );
         }
+    }
+
+    /**
+     * @return string
+     **/
+    public function getApiKey()
+    {
+        $optionsObj = Options::getInstance();
+        return $optionsObj->getApiKey($this->apiKeyCode);
+    }
+
+    /**
+    * @return array
+     **/
+    public function getCargoOptions()
+    {
+        $optionsObj = Options::getInstance();
+        return $optionsObj->getCargoOptions();
     }
 }

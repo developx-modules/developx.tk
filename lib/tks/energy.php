@@ -18,7 +18,8 @@ class Energy extends TksBase
     public $externalCode = 'ENERGY_ID';
     public $apiKeyCode = 'ENERGY_API_KEY';
 
-    public function getPriceTime($cityTo, $options, $cityFrom){
+    public function getPriceTime($cityTo, $cityFrom){
+        $options = $this->getCargoOptions();
         $price = $this->getData(
             $this->methods['price'],
             json_encode([
@@ -39,7 +40,7 @@ class Energy extends TksBase
             ]),
             'post',
             [
-                'NrgApi-DevToken: ' . Options::getApiKey($this->apiKeyCode)
+                'NrgApi-DevToken: ' . $this->getApiKey()
             ]
         );
 
@@ -61,7 +62,7 @@ class Energy extends TksBase
             false,
             'get',
             [
-                'NrgApi-DevToken: ' . Options::getApiKey($this->apiKeyCode),
+                'NrgApi-DevToken: ' . $this->getApiKey(),
             ]
         );
         $citys = json_decode($citys, true);
@@ -84,7 +85,6 @@ class Energy extends TksBase
                     'COORD' => $terminal['latitude'].":".$terminal['longitude'],
                     'TK_ID' => $this->tkName.$terminal['id']
                 ];
-
             }
         }
         return $preparePoints;

@@ -16,9 +16,9 @@ class Sdek extends TksBase
     public $tkName = 'sdek';
     public $externalCode = 'SDEK_ID';
 
-    public function getPriceTime($cityTo, $options, $cityFrom){
+    public function getPriceTime($cityTo, $cityFrom){
         $calc = new \CalculatePriceDeliveryCdek();
-
+        $options = $this->getCargoOptions();
         $calc->setSenderCityId($cityFrom);
         $calc->setReceiverCityId($cityTo);
         $calc->setTariffId(10);
