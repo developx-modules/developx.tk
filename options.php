@@ -4,7 +4,7 @@ global $USER;
 if ($USER->IsAdmin()):
 
     $moduleName = 'developx.tk';
-    Loader::includeModule('developx.tk');
+    Loader::includeModule($moduleName);
     $moduleObj = Developx\Tk\Options::getInstance();
 
     $arProps = $moduleObj->arOptions;
