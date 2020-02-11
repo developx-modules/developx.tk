@@ -23,7 +23,7 @@ class Jde extends TksBase
     public function getPriceTime($cityTo, $cityFrom)
     {
         $options = $this->getCargoOptions();
-        $price = $this->getData(
+        $result = $this->getData(
             $this->methods['calc'],
             [
                 'from' => $cityFrom,
@@ -33,11 +33,8 @@ class Jde extends TksBase
             ],
             'get'
         );
-        $price = json_decode($price, true);
-        return [
-            "PRICE" => $price['price'],
-            "TIME" => $price['mindays'] . ';' . $price['maxdays']
-        ];
+        $result = json_decode($result, true);
+        return $this->preparePriceAndTime($result['price'], $result['mindays'] ? $result['mindays'] . ';' . $result['maxdays'] : false);
     }
 
     public function getAllPoints()

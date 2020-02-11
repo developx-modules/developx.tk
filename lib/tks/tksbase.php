@@ -1,4 +1,5 @@
 <?php
+
 namespace Developx\Tk\Tks;
 
 use Developx\Tk\Dbmethods;
@@ -28,8 +29,10 @@ abstract class TksBase
      * All tk points from api
      *
      * @return array
-    **/
+     **/
     abstract function getAllPoints();
+
+    public $EMPTY_CONSTANT = 'empty';
 
     /**
      * @param string $link
@@ -41,11 +44,11 @@ abstract class TksBase
     public function getData($link, $fields = false, $type = 'post', $headers = false)
     {
         $ch = curl_init();
-        if ($type == 'json'){
+        if ($type == 'json') {
             $fields = json_encode($fields);
         }
-        if ($type == 'get' && $fields){
-            $link .= '?'.http_build_query($fields);
+        if ($type == 'get' && $fields) {
+            $link .= '?' . http_build_query($fields);
         }
         curl_setopt($ch, CURLOPT_URL, $link);
         if ($type == 'post' || $type == 'json') {
@@ -62,7 +65,7 @@ abstract class TksBase
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($ch);
-        if(curl_exec($ch) === false){
+        if (curl_exec($ch) === false) {
             echo 'Îøèáêà curl: ' . curl_error($ch);
         }
         curl_close($ch);
@@ -77,37 +80,40 @@ abstract class TksBase
         $exCode = $this->getLocationExternal();
         $pointsData = $this->getAllPoints();
         $pointsPreared = $this->preparePoints($pointsData);
+        if (BX_UTF != 'Y') {
+            $this->iconvArray($pointsPreared);
+        }
         $pointsResult = [];
         $tk = new Data();
         $locations = $tk->getLocations();
-        foreach ($locations as $loc){
+        foreach ($locations as $loc) {
             $locations_[$loc['LOC_NAME']] = $loc['LOC_ID'];
         }
         $finded = 0;
         $notFind = '';
-        foreach ($pointsPreared as $item){
+        foreach ($pointsPreared as $item) {
             $pointLocation = $locations_[$item['CITY']];
-            if (!empty($pointLocation)){
-                foreach ($item['POINTS'] as $point){
+            if (!empty($pointLocation)) {
+                foreach ($item['POINTS'] as $point) {
                     $point['LOC_ID'] = $pointLocation;
                     $pointsResult[] = $point;
                 }
                 $finded++;
                 $this->setLocationExternal($locations[$pointLocation], $item['EXTERNAL'], $exCode);
-            }else{
+            } else {
                 $notFind .= $item['CITY'] . ', ';
             }
         }
-        $notFind = substr($notFind,0,-2);
+        $notFind = substr($notFind, 0, -2);
 
         $this->updatePointsDB($pointsResult);
 
         $result = '';
-        $result .= 'Number of cities '.$this->tkName.' - '.count($pointsPreared).'<br>';
-        $result .= 'Number of cities on site - '.count($locations).'<br>';
-        $result .= 'Number of found cities '.$this->tkName.' - '.$finded.'<br>';
-        $result .= 'Not found cities ('.$notFind.')<br>';
-        $result .= 'Number of added pointsd - '.count($pointsResult).'<br>';
+        $result .= 'Number of cities ' . $this->tkName . ' - ' . count($pointsPreared) . '<br>';
+        $result .= 'Number of cities on site - ' . count($locations) . '<br>';
+        $result .= 'Number of found cities ' . $this->tkName . ' - ' . $finded . '<br>';
+        $result .= 'Not found cities (' . $notFind . ')<br>';
+        $result .= 'Number of added pointsd - ' . count($pointsResult) . '<br>';
         return $result;
     }
 
@@ -117,9 +123,9 @@ abstract class TksBase
     public function updatePointsDB($pointsArray)
     {
         foreach ($pointsArray as $point) {
-            if ($id = Dbmethods::getPoint($point)){
+            if ($id = Dbmethods::getPoint($point)) {
                 Dbmethods::updatePoint($id, $point);
-            }else{
+            } else {
                 Dbmethods::addPoint($point);
             }
         }
@@ -138,22 +144,19 @@ abstract class TksBase
                 '*',
             )
         ));
-        while($item = $res->fetch())
-        {
+        while ($item = $res->fetch()) {
             $exServiceList[$item['CODE']] = $item['ID'];
         }
-        if (empty($exServiceList[$code])){
+        if (empty($exServiceList[$code])) {
             $res = \Bitrix\Sale\Location\ExternalServiceTable::add(array(
                 'CODE' => $this->externalCode,
             ));
-            if($res->isSuccess())
-            {
+            if ($res->isSuccess()) {
                 return $res->getId();
-            }else
-            {
+            } else {
                 print_r($res->getErrorMessages());
             }
-        }else{
+        } else {
             return $exServiceList[$code];
         }
     }
@@ -165,7 +168,7 @@ abstract class TksBase
      **/
     public function setLocationExternal($location, $val, $exId)
     {
-        if (empty($location['EXTERNAL'][$this->externalCode]) && !empty($val)){
+        if (empty($location['EXTERNAL'][$this->externalCode]) && !empty($val)) {
             \Bitrix\Sale\Location\LocationTable::update(
                 $location['LOC_ID'],
                 array(
@@ -191,11 +194,30 @@ abstract class TksBase
     }
 
     /**
-    * @return array
+     * @return array
      **/
     public function getCargoOptions()
     {
         $optionsObj = Options::getInstance();
         return $optionsObj->getCargoOptions();
+    }
+
+    public function iconvArray(&$array)
+    {
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $this->iconvArray($array[$key]);
+            } else {
+                $array[$key] = iconv('UTF-8', 'windows-1251', $value);
+            }
+        }
+    }
+
+    public function preparePriceAndTime($price, $time)
+    {
+        return [
+            'PRICE' => (!empty($price) && $price !== 0) ? $price : $this->EMPTY_CONSTANT,
+            'TIME' => (!empty($time) && $time !== 0) ? $time : $this->EMPTY_CONSTANT,
+        ];
     }
 }

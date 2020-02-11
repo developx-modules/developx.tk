@@ -34,7 +34,6 @@ class DevelopxTkComponent extends \CBitrixComponent
         return $this->tkDataObj->getLocations();
     }
 
-
     public function executeComponent()
     {
         $request = $this->getRequest();
@@ -43,7 +42,7 @@ class DevelopxTkComponent extends \CBitrixComponent
         }else{
             $this->arResult['CITY_ID'] = $this->arParams['CITY_DEFAULT'];
         }
-        if (isset($this->arResult['CITY_ID'])) {
+        if (!empty($this->arResult['CITY_ID'])) {
             $this->tkDataObj = new Developx\Tk\Data();
             $this->arResult['POINTS'] = $this->getPoints();
             $this->arResult['PRICES'] = $this->getPrices();

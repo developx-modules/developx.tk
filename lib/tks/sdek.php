@@ -30,13 +30,9 @@ class Sdek extends TksBase
         if ($calc->calculate() === true) {
             $res = $calc->getResult();
 
-            return [
-                "PRICE" => $res['result']['price'],
-                "TIME" => $res['result']['deliveryPeriodMin'] . ';' . $res['result']['deliveryPeriodMax']
-            ];
+            return $this->preparePriceAndTime($res['result']['price'], $res['result']['deliveryPeriodMin'] . ';' . $res['result']['deliveryPeriodMax']);
         }
-        return false;
-
+        return $this->preparePriceAndTime(false, false);
     }
 
     public function getAllPoints()

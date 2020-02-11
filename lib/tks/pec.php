@@ -37,13 +37,13 @@ class Pec extends TksBase
             'get'
         );
         $price = json_decode($price, true);
-        $period = (strpos($price['periods_days'], ' - ') !== false) ? str_replace(' - ', ';', $price['periods_days']) : $price['periods_days'];
 
-
-        return [
-            "PRICE" => $price['autonegabarit'][2],
-            "TIME" => $period
-        ];
+        if (!empty($price['periods_days'])) {
+            $period = (strpos($price['periods_days'], ' - ') !== false) ? str_replace(' - ', ';', $price['periods_days']) : $price['periods_days'];
+        } else {
+            $period = false;
+        }
+        return $this->preparePriceAndTime($price['autonegabarit'][2], $period);
     }
 
     public function getAllPoints()
@@ -70,13 +70,19 @@ class Pec extends TksBase
                     unset($pt['divisionTimeOfWork']);
                     unset($pt['timeOfWork']);
 
-                    if ($cityName == 'Москва Восток') $cityName = 'Москва';
-
+                    if (BX_UTF == 'Y') {
+                        if ($cityName == 'Москва Восток') {
+                            $cityName = 'Москва';
+                        }
+                    } else {
+                        if (iconv('UTF-8', 'windows-1251', $cityName) == 'Москва Восток') {
+                            $cityName = iconv('windows-1251', 'UTF-8', 'Москва');
+                        }
+                    }
                     if (empty($preparePoints[$cityName])) {
                         $preparePoints[$cityName]['CITY'] = $cityName;
                         $preparePoints[$cityName]['EXTERNAL'] = $terminal['bitrixId'];
                     }
-
 
                     $preparePoints[$cityName]['POINTS'][] = [
                         'LOC_ID' => false,

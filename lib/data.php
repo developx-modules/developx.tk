@@ -29,7 +29,6 @@ class Data
         $dbCachedData = Dbmethods::getCachedData($locId);
         $cityTo = $this->getLocationById($locId);
         $cityFrom = $this->getCityFrom();
-
         $arResult = [];
         foreach ($tks as $tk) {
             if (
@@ -41,27 +40,24 @@ class Data
 
             if (empty($dbCachedData[$tk->tkName])) {
                 $tkResult = $tk->getPriceTime($cityTo['EXTERNAL'][$tk->externalCode], $cityFrom['EXTERNAL'][$tk->externalCode]);
-                if ($this->checkPriceAndTime($tkResult)) {
-                    Dbmethods::cacheData([
-                        'LOC_ID' => $locId,
-                        'TK' => $tk->tkName,
-                        'TIME' => $tkResult['TIME'],
-                        'PRICE' => $tkResult['PRICE']
-                    ]);
-                }
+
+                Dbmethods::cacheData([
+                    'LOC_ID' => $locId,
+                    'TK' => $tk->tkName,
+                    'TIME' => $tkResult['TIME'],
+                    'PRICE' => $tkResult['PRICE']
+                ]);
             } else {
                 $tkResult = $dbCachedData[$tk->tkName];
             }
 
-            if ($this->checkPriceAndTime($tkResult)) {
-                $arResult[$tk->tkName] = [
-                    'CODE' => $tk->tkName,
-                    'TITLE' => $tk->tkTitle,
-                    'PRICE' => $tkResult['PRICE'],
-                    'TIME' => $tkResult['TIME'],
-                    'TIME_FORMAT' => $this->formatTime($tkResult['TIME'])
-                ];
-            }
+            $arResult[$tk->tkName] = [
+                'CODE' => $tk->tkName,
+                'TITLE' => $tk->tkTitle,
+                'PRICE' => $tkResult['PRICE'],
+                'TIME' => $tkResult['TIME'],
+                'TIME_FORMAT' => $this->formatTime($tkResult['TIME'])
+            ];
         }
         return $arResult;
     }
@@ -79,18 +75,6 @@ class Data
             $points[$key]['GPS_S'] = $coords[1];
         }
         return $points;
-    }
-
-    /**
-     * @param array $result
-     * @return boolean
-     **/
-    private function checkPriceAndTime($result)
-    {
-        if (!empty($result['PRICE']) && !empty($result['TIME'])) {
-            return true;
-        }
-        return false;
     }
 
     /**

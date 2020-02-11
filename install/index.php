@@ -73,7 +73,10 @@ class developx_tk extends CModule
 
     public function InstallFiles()
     {
-        //  CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/local/modules/developx.tk/install/admin", $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin", true, true);
+        CopyDirFiles($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/developx.tk/install/admin", $_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin", true, true);
+        CopyDirFiles($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/developx.tk/install/components", $_SERVER["DOCUMENT_ROOT"] . "/bitrix/components", true, true);
+        CopyDirFiles($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/developx.tk/install/js", $_SERVER["DOCUMENT_ROOT"] . "/bitrix/js", true, true);
+
         return true;
     }
 
@@ -97,7 +100,9 @@ class developx_tk extends CModule
 
     public function uninstallFiles()
     {
-
+        DeleteDirFilesEx("/bitrix/admin/developxtk_ajax.php");
+        DeleteDirFilesEx("/bitrix/components/developx/tk");
+        DeleteDirFilesEx("/bitrix/js/developx.tk");
     }
 
 }

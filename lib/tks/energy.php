@@ -24,7 +24,7 @@ class Energy extends TksBase
     public function getPriceTime($cityTo, $cityFrom)
     {
         $options = $this->getCargoOptions();
-        $price = $this->getData(
+        $result = $this->getData(
             $this->methods['price'],
             json_encode([
                 "idCityFrom" => (int)$cityFrom,
@@ -48,16 +48,17 @@ class Energy extends TksBase
             ]
         );
 
-        $price = json_decode($price, true);
-        $time = preg_replace('/[^\d-]/', '', $price['transfer'][0]['interval']);
-        $timeArr = explode('-', $time);
-        if ($timeArr[1]) {
-            $time = implode(';', $timeArr);
+        $result = json_decode($result, true);
+        if (isset($result['transfer'][0]['interval'])) {
+            $time = preg_replace('/[^\d-]/', '', $result['transfer'][0]['interval']);
+            $timeArr = explode('-', $time);
+            if ($timeArr[1]) {
+                $time = implode(';', $timeArr);
+            }
+        } else {
+            $time = false;
         }
-        return [
-            "PRICE" => $price['transfer'][0]['price'],
-            "TIME" => $time
-        ];
+        return $this->preparePriceAndTime($result['transfer'][0]['price'], $time);
     }
 
     public function getAllPoints()

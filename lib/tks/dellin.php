@@ -1,5 +1,7 @@
 <?php
+
 namespace Developx\Tk\Tks;
+
 use Developx\Tk\Options;
 
 /**
@@ -20,9 +22,10 @@ class Dellin extends TksBase
     public $externalCode = 'DL_KLADR';
     public $apiKeyCode = 'DL_KEY';
 
-    public function getPriceTime($kladrTo, $cityFrom){
+    public function getPriceTime($kladrTo, $cityFrom)
+    {
         $options = $this->getCargoOptions();
-        $price = $this->getData(
+        $result = $this->getData(
             $this->methods['price'],
             [
                 'appkey' => $this->getApiKey(),
@@ -35,14 +38,12 @@ class Dellin extends TksBase
             ],
             'json'
         );
-        $price = json_decode($price, true);
-        return [
-            "PRICE" => round($price['price']),
-            "TIME" => $price['time']['value']
-        ];
+        $result = json_decode($result, true);
+        return $this->preparePriceAndTime($result['price'], $result['time']['value']);
     }
 
-    public function findCity($cityName){
+    public function findCity($cityName)
+    {
         $cityArr = $this->getData(
             $this->methods['find_city'],
             [
@@ -55,7 +56,8 @@ class Dellin extends TksBase
         return json_decode($cityArr['cities'][0]);
     }
 
-    public function getAllPoints(){
+    public function getAllPoints()
+    {
         $terminals = $this->getData(
             $this->methods['terminals'],
             [
@@ -72,7 +74,7 @@ class Dellin extends TksBase
     public function preparePoints($points)
     {
         $preparePoints = [];
-        foreach ($points['city'] as $point){
+        foreach ($points['city'] as $point) {
             $preparePoints[$point['name']]['CITY'] = $point['name'];
             $preparePoints[$point['name']]['EXTERNAL'] = $point['code'];
             foreach ($point['terminals']['terminal'] as $terminal) {
@@ -83,8 +85,8 @@ class Dellin extends TksBase
                     'ADR' => $terminal['fullAddress'],
                     'PHONE' => $terminal['mainPhone'] ? $terminal['mainPhone'] : '-',
                     'WORK_TIME' => $terminal['calcSchedule']['arrival'] ? $terminal['calcSchedule']['arrival'] : '-',
-                    'COORD' => $terminal['latitude'].":".$terminal['longitude'],
-                    'TK_ID' => $this->tkName.$terminal['id']
+                    'COORD' => $terminal['latitude'] . ":" . $terminal['longitude'],
+                    'TK_ID' => $this->tkName . $terminal['id']
                 ];
 
             }
