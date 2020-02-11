@@ -1,4 +1,5 @@
 <?
+
 namespace Developx\Tk;
 
 use Developx\Tk\Tks\Dellin;
@@ -16,7 +17,8 @@ class Data
      * @param integer $locId
      * @return array
      **/
-    public function getPrices($locId){
+    public function getPrices($locId)
+    {
         $tks = [
             'pec' => new Pec(),
             'sdek' => new Sdek(),
@@ -29,11 +31,11 @@ class Data
         $cityFrom = $this->getCityFrom();
 
         $arResult = [];
-        foreach ($tks as $tk){
+        foreach ($tks as $tk) {
             if (
                 empty($cityFrom['EXTERNAL'][$tk->externalCode]) ||
                 empty($cityTo['EXTERNAL'][$tk->externalCode])
-            ){
+            ) {
                 continue;
             }
 
@@ -68,7 +70,8 @@ class Data
      * @param integer $locId
      * @return array
      **/
-    public function getPoints($locId){
+    public function getPoints($locId)
+    {
         $points = Dbmethods::getPointByLoc($locId);
         foreach ($points as $key => $point) {
             $coords = explode(':', $point['COORD']);
@@ -95,7 +98,7 @@ class Data
      **/
     private function getCityFrom()
     {
-        $cityFromId = \COption::GetOptionString('sale','location',false);
+        $cityFromId = \COption::GetOptionString('sale', 'location', false);
         return $this->getLocationById($cityFromId, true);
     }
 
@@ -123,8 +126,7 @@ class Data
             )
         ));
         $arResult = [];
-        while ($item = $res->fetch())
-        {
+        while ($item = $res->fetch()) {
             $item['EXTERNAL'][$item['SALE_LOCATION_LOCATION_EXTERNAL_SERVICE_CODE']] = $item['SALE_LOCATION_LOCATION_EXTERNAL_XML_ID'];
             if (empty($arResult[$item['ID']])) {
                 $arResult[$item['ID']] = $item;
@@ -160,8 +162,7 @@ class Data
             ]
         ));
         $arResult = [];
-        while ($item = $res->fetch())
-        {
+        while ($item = $res->fetch()) {
             $item['EXTERNAL'][$item['SALE_LOCATION_LOCATION_EXTERNAL_SERVICE_CODE']] = $item['SALE_LOCATION_LOCATION_EXTERNAL_XML_ID'];
             if (empty($arResult)) {
                 $arResult = $item;
@@ -173,7 +174,6 @@ class Data
     }
 
 
-
     /**
      * @param string $time
      * @return string
@@ -182,9 +182,9 @@ class Data
     {
         if (strpos($time, ';') != false) {
             $times = explode(';', $time);
-            $result = $times[0] . ' - ' . $times[1] . ' ' . $this->declension($times[1], ['РґРµРЅСЊ', 'РґРЅСЏ', 'РґРЅРµР№']);
-        }else{
-            $result = $time . ' ' . $this->declension($time, ['РґРµРЅСЊ', 'РґРЅСЏ', 'РґРЅРµР№']);
+            $result = $times[0] . ' - ' . $times[1] . ' ' . $this->declension($times[1], ['день', 'дня', 'дней']);
+        } else {
+            $result = $time . ' ' . $this->declension($time, ['день', 'дня', 'дней']);
         }
         return $result;
     }
@@ -211,9 +211,9 @@ class Data
             $res = $digit . ' ' . $expr[2];
         } else {
             $i %= 10;
-            if($i == 1){
+            if ($i == 1) {
                 $res = $digit . ' ' . $expr[0];
-            } elseif($i >= 2 && $i <= 4) {
+            } elseif ($i >= 2 && $i <= 4) {
                 $res = $digit . ' ' . $expr[1];
             } else {
                 $res = $digit . ' ' . $expr[2];
@@ -222,4 +222,5 @@ class Data
         return trim($res);
     }
 }
+
 ?>

@@ -1,5 +1,7 @@
 <?
+
 namespace Developx\Tk;
+
 use Developx\Tk\DB\DeliveryInfoTable;
 use Developx\Tk\DB\PointsTable;
 
@@ -17,8 +19,7 @@ class Dbmethods
     {
         $result = PointsTable::add($data);
 
-        if ($result->isSuccess())
-        {
+        if ($result->isSuccess()) {
             return $result->getId();
         }
         return false;
@@ -34,8 +35,7 @@ class Dbmethods
             'select' => array('ID'),
             'filter' => array("TK_ID" => $data['TK_ID']),
         ));
-        if ($point = $result->fetch())
-        {
+        if ($point = $result->fetch()) {
             return $point;
         }
         return false;
@@ -52,8 +52,7 @@ class Dbmethods
             'select' => array('*'),
             'filter' => array("LOC_ID" => $locId),
         ));
-        while ($point = $result->fetch())
-        {
+        while ($point = $result->fetch()) {
             $arResult[] = $point;
         }
         return $arResult;
@@ -76,9 +75,8 @@ class Dbmethods
         $logs = PointsTable::getList(array(
             'select' => array('ID'),
         ));
-        while ($log = $logs->fetch())
-        {
-            PointsTable ::delete($log["ID"]);
+        while ($log = $logs->fetch()) {
+            PointsTable::delete($log["ID"]);
         }
     }
 
@@ -88,14 +86,14 @@ class Dbmethods
      * @param integer $locId
      * @return array
      **/
-    public function getCachedData($locId){
+    public function getCachedData($locId)
+    {
         $arResult = [];
         $result = DeliveryInfoTable::getList(array(
             'select' => array('*'),
             'filter' => array("LOC_ID" => $locId),
         ));
-        while ($res = $result->fetch())
-        {
+        while ($res = $result->fetch()) {
             $arResult[$res['TK']] = $res;
         }
         return $arResult;
@@ -105,11 +103,11 @@ class Dbmethods
      * @param array $data
      * @return integer
      **/
-    public function cacheData($data){
+    public function cacheData($data)
+    {
         $result = DeliveryInfoTable::add($data);
 
-        if ($result->isSuccess())
-        {
+        if ($result->isSuccess()) {
             return $result->getId();
         }
         return false;
@@ -120,10 +118,10 @@ class Dbmethods
         $logs = DeliveryInfoTable::getList(array(
             'select' => array('ID'),
         ));
-        while ($log = $logs->fetch())
-        {
-            DeliveryInfoTable ::delete($log["ID"]);
+        while ($log = $logs->fetch()) {
+            DeliveryInfoTable::delete($log["ID"]);
         }
     }
 }
+
 ?>

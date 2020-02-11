@@ -1,4 +1,5 @@
 <?php
+
 namespace Developx\Tk\Tks;
 
 /**
@@ -16,10 +17,11 @@ class Jde extends TksBase
         'schedule' => 'https://api.jde.ru/vD/geo/schedule'
     ];
     public $tkName = 'jde';
-    public $tkTitle = 'Ð–Ð”Ð•';
+    public $tkTitle = 'ÆÄÅ';
     public $externalCode = 'JDE_ID';
 
-    public function getPriceTime($cityTo, $cityFrom){
+    public function getPriceTime($cityTo, $cityFrom)
+    {
         $options = $this->getCargoOptions();
         $price = $this->getData(
             $this->methods['calc'],
@@ -31,14 +33,15 @@ class Jde extends TksBase
             ],
             'get'
         );
-        $price = json_decode($price,true);
+        $price = json_decode($price, true);
         return [
             "PRICE" => $price['price'],
-            "TIME" => $price['mindays'].';'.$price['maxdays']
+            "TIME" => $price['mindays'] . ';' . $price['maxdays']
         ];
     }
 
-    public function getAllPoints(){
+    public function getAllPoints()
+    {
         $points = $this->getData(
             $this->methods['geo'],
             [
@@ -46,14 +49,14 @@ class Jde extends TksBase
             ],
             'get'
         );
-        $points = json_decode($points,true);
+        $points = json_decode($points, true);
         return $points;
     }
 
     public function preparePoints($points)
     {
         $preparePoints = [];
-        foreach ($points as $point){
+        foreach ($points as $point) {
             $preparePoints[$point['city']]['CITY'] = $point['city'];
             $preparePoints[$point['city']]['EXTERNAL'] = $point['code'];
 
@@ -63,8 +66,8 @@ class Jde extends TksBase
                 'ADR' => $point['addr'],
                 'PHONE' => '-',
                 'WORK_TIME' => '-',
-                'COORD' => $point['coords']['lat'].":".$point['coords']['lng'],
-                'TK_ID' => $this->tkName.$point['code']
+                'COORD' => $point['coords']['lat'] . ":" . $point['coords']['lng'],
+                'TK_ID' => $this->tkName . $point['code']
             ];
         }
         return $preparePoints;

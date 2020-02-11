@@ -2,9 +2,9 @@
 /**
  * Pecom Kabinet SDK
  *
- * РўСЂРµР±РѕРІР°РЅРёСЏ:
- *	- PHP 5.2 Рё РІС‹С€Рµ
- *	- РќРµРѕР±С…РѕРґРёРјС‹Рµ PHP-СЂР°СЃС€РёСЂРµРЅРёСЏ:
+ * Требования:
+ *	- PHP 5.2 и выше
+ *	- Необходимые PHP-расширения:
  *		- curl {@link http://php.net/manual/ru/book.curl.php}
  *		- json {@link http://php.net/manual/ru/book.json.php}
  *
@@ -15,7 +15,7 @@
  */
 
 /*
-	РџСЂРѕРІРµСЂРєР° РЅР° С‚Рѕ, С‡С‚Рѕ РЅРµРѕР±С…РѕРґРёРјС‹Рµ СЂР°СЃС€РёСЂРµРЅРёСЏ СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹
+	Проверка на то, что необходимые расширения установлены
 */
 if (!function_exists('curl_init'))
 {
@@ -27,65 +27,65 @@ if (!function_exists('json_decode'))
 }
 
 /**
- * РљР»Р°СЃСЃ РёСЃРєР»СЋС‡РµРЅРёСЏ, РєРѕС‚РѕСЂС‹Рµ РјРѕР¶РµС‚ РІС‹Р±СЂР°СЃС‹РІР°С‚СЊ РєР»Р°СЃСЃ {@link PecomKabinet}
+ * Класс исключения, которые может выбрасывать класс {@link PecomKabinet}
  */
 class PecomKabinetException extends Exception
 {
 }
 
 /**
- * Р“Р»Р°РІРЅС‹Р№ РєР»Р°СЃСЃ SDK
+ * Главный класс SDK
  */
 class PecomKabinet
 {
 	/**
-	 * Р’РµСЂСЃРёСЏ СЃРµСЂРІРµСЂРЅРѕРіРѕ API (РЅРµ PHP SDK!)
+	 * Версия серверного API (не PHP SDK!)
 	 * @const string
 	 */
 	const VERSION = '1.0';
 
 	/**
-	 * Р‘Р°Р·РѕРІС‹Р№ URL РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
+	 * Базовый URL по умолчанию
 	 * @const string
 	 */
 	const API_BASE_URL = 'https://kabinet.pecom.ru/api/v1/';
 
 	/**
-	 * РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+	 * Имя пользователя
 	 * @var string
 	 */
 	private $_api_login = '';
 
 	/**
-	 * РљР»СЋС‡ РґРѕСЃС‚СѓРїР° Рє API
+	 * Ключ доступа к API
 	 * @var string
 	 */
 	private $_api_key = '';
 
 	/**
-	 * Р‘Р°Р·РѕРІС‹Р№ URL
+	 * Базовый URL
 	 * @var string
 	 */
 	private $_api_url = '';
 
 	/**
-	 * РџРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёРµ РЅР°СЃС‚СЂРѕРµРє curl
+	 * Переопределение настроек curl
 	 * @var array
 	 */
 	private $_curl_options = array();
 
 	/**
-	 * Р­РєР·РµРјРїР»СЏСЂ curl'Р°
+	 * Экземпляр curl'а
 	 * @var resource
 	 */
 	private $_ch = null;
 
 	/**
-	 * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСЃР°
-	 * @param string $api_login РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
-	 * @param string $api_key РљР»СЋС‡ РґРѕСЃС‚СѓРїР° Рє API
-	 * @param array $curl_options Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ curl (РІРѕР·РјРѕР¶РЅРѕ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёРµ)
-	 * @param string $api_url Р‘Р°Р·РѕРІС‹Р№ URL API (РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅС‹Р№ РїР°СЂР°РјРµС‚СЂ), РµСЃР»Рё РЅРµ СѓРєР°Р·Р°РЅ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ Р°РґСЂРµСЃ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
+	 * Конструктор класса
+	 * @param string $api_login Имя пользователя
+	 * @param string $api_key Ключ доступа к API
+	 * @param array $curl_options Дополнительные параметры для curl (возможно переопределение)
+	 * @param string $api_url Базовый URL API (необязательный параметр), если не указан используется адрес по умолчанию
 	 * @throws PecomKabinetException
 	 */
 	public function __construct($api_login, $api_key, $curl_options = array(), $api_url = '')
@@ -97,13 +97,13 @@ class PecomKabinet
 	}
 
 	/**
-	 * РћСЃСѓС‰РµСЃС‚РІР»СЏРµС‚ РІС‹Р·РѕРІ РјРµС‚РѕРґР° API
-	 * @param string $controller РќР°Р·РІР°РЅРёРµ РіСЂСѓРїРїС‹
-	 * @param string $action РќР°Р·РІР°РЅРёРµ РјРµС‚РѕРґР°
-	 * @param mixed $data Р’С…РѕРґСЏС‰РёРµ РґР°РЅРЅС‹Рµ Р·Р°РїСЂРѕСЃР°
-	 * @param bool $assoc Р¤РѕСЂРјР°С‚ РІРѕР·РІСЂР°С‰Р°РµРјРѕРіРѕ СЂРµР·СѓР»СЊС‚Р°С‚Р°, РµСЃР»Рё СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ РІ true СЂРµР·СѓР»СЊС‚Р°С‚ Р±СѓРґРµС‚ РѕР±СЉРµРєС‚РѕРј, false -- РјР°СЃСЃРёРІРѕРј
-	 * @return mixed Р РµР·СѓР»СЊС‚Р°С‚ РІС‹РїРѕР»РЅРµРЅРёСЏ Р·Р°РїСЂРѕСЃР°
-	 * @throws PecomKabinetException Р’ СЃР»СѓС‡Р°Рµ РѕС€РёР±РѕРє РїСЂРё РѕСЃСѓС‰РµСЃС‚РІР»РµРЅРёРё Р·Р°РїСЂРѕСЃР°
+	 * Осуществляет вызов метода API
+	 * @param string $controller Название группы
+	 * @param string $action Название метода
+	 * @param mixed $data Входящие данные запроса
+	 * @param bool $assoc Формат возвращаемого результата, если установлено в true результат будет объектом, false -- массивом
+	 * @return mixed Результат выполнения запроса
+	 * @throws PecomKabinetException В случае ошибок при осуществлении запроса
 	 */
 	public function call($controller, $action, $data, $assoc = false)
 	{
@@ -141,7 +141,7 @@ class PecomKabinet
 	}
 
 	/**
-	 * Р—Р°РєСЂС‹РІР°РµС‚ curl-СЃРѕРµРґРёРЅРµРЅРёРµ
+	 * Закрывает curl-соединение
 	 * @return void
 	 */
 	public function close()
@@ -153,10 +153,10 @@ class PecomKabinet
 	}
 
 	/**
-	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»РЅС‹Р№ URL РґР»СЏ Р·Р°РїСЂРѕСЃР° Рє РјРµС‚РѕРґСѓ API
-	 * @param string $controller РќР°Р·РІР°РЅРёРµ РіСЂСѓРїРїС‹
-	 * @param string $action РќР°Р·РІР°РЅРёРµ РјРµС‚РѕРґР°
-	 * @return string РџРѕР»РЅС‹Р№ URL
+	 * Возвращает полный URL для запроса к методу API
+	 * @param string $controller Название группы
+	 * @param string $action Название метода
+	 * @return string Полный URL
 	 */
 	private function _construct_api_url($controller, $action)
 	{
@@ -164,8 +164,8 @@ class PecomKabinet
 	}
 
 	/**
-	 * РРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ curl
-	 * @return resource Р­РєР·РµРјРїР»СЏСЂ curl'Р° РґР»СЏ Р·Р°РїСЂРѕСЃРѕРІ
+	 * Инициализирует curl
+	 * @return resource Экземпляр curl'а для запросов
 	 */
 	private function _init_curl()
 	{

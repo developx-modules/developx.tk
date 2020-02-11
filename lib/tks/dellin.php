@@ -16,7 +16,7 @@ class Dellin extends TksBase
         'find_city' => 'https://api.dellin.ru/v2/public/kladr.json',
     ];
     public $tkName = 'dellin';
-    public $tkTitle = 'Р”РµР»РѕРІС‹Рµ Р»РёРЅРёРё';
+    public $tkTitle = 'Деловые линии';
     public $externalCode = 'DL_KLADR';
     public $apiKeyCode = 'DL_KEY';
 

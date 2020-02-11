@@ -1,5 +1,7 @@
 <?php
+
 namespace Developx\Tk\Tks;
+
 use Developx\Tk\Options;
 
 require_once('sdk-pec/pecom_kabinet.php');
@@ -17,24 +19,25 @@ class Pec extends TksBase
         'towns' => 'https://new.pecom.ru/ru/calc/towns.php',
     ];
     public $tkName = 'pec';
-    public $tkTitle = 'РџР­Рљ';
+    public $tkTitle = 'ПЭК';
     public $externalCode = 'PEC_ID';
     public $apiKeyCode = 'PEC_KEY';
 
-    public function getPriceTime($cityTo, $cityFrom){
+    public function getPriceTime($cityTo, $cityFrom)
+    {
         $options = $this->getCargoOptions();
         $price = $this->getData(
             $this->methods['calc'],
             [
                 'places' =>
-                    [ [$options['length'], $options['wide'], $options['height'], $options['volume'], $options['weight']] ],
-                'take' => [ 'town' => -$cityFrom ],
-                'deliver' => [ 'town' => -$cityTo ]
+                    [[$options['length'], $options['wide'], $options['height'], $options['volume'], $options['weight']]],
+                'take' => ['town' => -$cityFrom],
+                'deliver' => ['town' => -$cityTo]
             ],
             'get'
         );
-        $price = json_decode($price,true);
-        $period = (strpos($price['periods_days'],' - ') !== false)?str_replace(' - ', ';',$price['periods_days']):$price['periods_days'];
+        $price = json_decode($price, true);
+        $period = (strpos($price['periods_days'], ' - ') !== false) ? str_replace(' - ', ';', $price['periods_days']) : $price['periods_days'];
 
 
         return [
@@ -59,7 +62,7 @@ class Pec extends TksBase
     public function preparePoints($points)
     {
         $preparePoints = [];
-        foreach ($points['branches'] as $terminal){
+        foreach ($points['branches'] as $terminal) {
             foreach ($terminal['divisions'] as $division) {
 
                 foreach ($division['warehouses'] as $pt) {
@@ -67,7 +70,7 @@ class Pec extends TksBase
                     unset($pt['divisionTimeOfWork']);
                     unset($pt['timeOfWork']);
 
-                    if ($cityName == 'РњРѕСЃРєРІР° Р’РѕСЃС‚РѕРє') $cityName = 'РњРѕСЃРєРІР°';
+                    if ($cityName == 'Москва Восток') $cityName = 'Москва';
 
                     if (empty($preparePoints[$cityName])) {
                         $preparePoints[$cityName]['CITY'] = $cityName;

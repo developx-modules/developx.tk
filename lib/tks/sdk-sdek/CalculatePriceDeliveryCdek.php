@@ -1,7 +1,7 @@
 <?php
 /**
- * Р Р°СЃС‡С‘С‚ СЃС‚РѕРёРјРѕСЃС‚Рё РґРѕСЃС‚Р°РІРєРё РЎР”Р­Рљ
- * РњРѕРґСѓР»СЊ РґР»СЏ РёРЅС‚РµСЂРЅРµС‚-РјР°РіР°Р·РёРЅРѕРІ (РРњ)
+ * Расчёт стоимости доставки СДЭК
+ * Модуль для интернет-магазинов (ИМ)
  * 
  * @version 1.0
  * @since 21.06.2012
@@ -11,55 +11,55 @@
  */
 class CalculatePriceDeliveryCdek {
 	
-	//РІРµСЂСЃРёСЏ РјРѕРґСѓР»СЏ
+	//версия модуля
 	private $version = "1.0";
-	//url РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РґР°РЅРЅС‹С… РїРѕ РѕС‚РїСЂР°РІРєРµ
+	//url для получения данных по отправке
     private $jsonUrl = 'http://api.cdek.ru/calculator/calculate_price_by_json_request.php';
 		
-	//Р°РІС‚РѕСЂРёР·Р°С†РёСЏ РРњ
+	//авторизация ИМ
 	private $authLogin;
 	private $authPassword;
 	
-	//id РіРѕСЂРѕРґР°-РѕС‚РїСЂР°РІРёС‚РµР»СЏ
+	//id города-отправителя
 	private $senderCityId;
-	//id РіРѕСЂРѕРґР°-РїРѕР»СѓС‡Р°С‚РµР»СЏ
+	//id города-получателя
 	private $receiverCityId;
-	//id С‚Р°СЂРёС„Р°
+	//id тарифа
 	private $tariffId;
-	//id СЃРїРѕСЃРѕР±Р° РґРѕСЃС‚Р°РІРєРё (СЃРєР»Р°Рґ-СЃРєР»Р°Рґ, СЃРєР»Р°Рґ-РґРІРµСЂСЊ)
+	//id способа доставки (склад-склад, склад-дверь)
 	private $modeId;
-	//РјР°СЃСЃРёРІ РјРµСЃС‚ РѕС‚РїСЂР°РІР»РµРЅРёСЏ
+	//массив мест отправления
 	public $goodsList;
-	//РјР°СЃСЃРёРІ id С‚Р°СЂРёС„РѕРІ
+	//массив id тарифов
 	public $tariffList;
-	//СЂРµР·СѓР»СЊС‚Р°С‚ СЂР°СЃС‡С‘С‚Р° СЃС‚РѕРёРјРѕСЃС‚Рё РѕС‚РїСЂР°РІР»РµРЅРёСЏ РРњ
+	//результат расчёта стоимости отправления ИМ
 	private $result;
-    //СЂРµР·СѓР»СЊС‚Р°С‚ РІ СЃР»СѓС‡Р°Рµ РѕС€РёР±РѕС‡РЅРѕРіРѕ СЂР°СЃС‡С‘С‚Р°
+    //результат в случае ошибочного расчёта
     private $error;
-	//РїР»Р°РЅРёСЂСѓРµРјР°СЏ РґР°С‚Р° Р·Р°РєР°Р·Р°
+	//планируемая дата заказа
 	public $dateExecute;
 	
 	/**
-	 * РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+	 * конструктор
 	 */
 	public function __construct() {
 	     $this->dateExecute = date('Y-m-d');
 	}	
 	
 	/**
-	 * РЈСЃС‚Р°РЅРѕРІРєР° РїР»Р°РЅРёСЂСѓРµРјРѕР№ РґР°С‚С‹ РѕС‚РїСЂР°РІРєРё
+	 * Установка планируемой даты отправки
 	 * 
-	 * @param string $date РґР°С‚Р° РїР»Р°РЅРёСЂСѓРµРјРѕР№ РѕС‚РїСЂР°РІРєРё, РЅР°РїСЂРёРјРµСЂ '2012-06-25'
+	 * @param string $date дата планируемой отправки, например '2012-06-25'
 	 */
 	public function setDateExecute($date) {
 		$this->dateExecute = date($date);
 	}
 	
 	/**
-	 * РђРІС‚РѕСЂРёР·Р°С†РёСЏ РРњ
+	 * Авторизация ИМ
 	 * 
-	 * @param string $authLogin Р»РѕРіРёРЅ
-	 * @param string $authPassword РїР°СЂРѕР»СЊ
+	 * @param string $authLogin логин
+	 * @param string $authPassword пароль
 	 */
 	public function setAuth($authLogin, $authPassword) {
 		$this->authLogin = $authLogin;
@@ -67,7 +67,7 @@ class CalculatePriceDeliveryCdek {
 	}
 
 	/**
-	 * Р—Р°С‰РёС„СЂРѕРІР°РЅРЅС‹Р№ РїР°СЂРѕР»СЊ РґР»СЏ РїРµСЂРµРґР°С‡Рё РЅР° СЃРµСЂРІРµСЂ
+	 * Защифрованный пароль для передачи на сервер
 	 * 
 	 * @return string
 	 */
@@ -76,79 +76,79 @@ class CalculatePriceDeliveryCdek {
 	}
 
 	/**
-	 * Р“РѕСЂРѕРґ-РѕС‚РїСЂР°РІРёС‚РµР»СЊ
+	 * Город-отправитель
 	 * 
-	 * @param int $id РіРѕСЂРѕРґР°
+	 * @param int $id города
 	 */
 	public function setSenderCityId($id) {
 		$id = (int) $id;
 		if($id == 0) {
-			throw new Exception("РќРµРїСЂР°РІРёР»СЊРЅРѕ Р·Р°РґР°РЅ РіРѕСЂРѕРґ-РѕС‚РїСЂР°РІРёС‚РµР»СЊ.");
+			throw new Exception("Неправильно задан город-отправитель.");
 		}
 		$this->senderCityId = $id;
 	}	
 	
 	/**
-	 * Р“РѕСЂРѕРґ-РїРѕР»СѓС‡Р°С‚РµР»СЊ
+	 * Город-получатель
 	 * 
-	 * @param int $id РіРѕСЂРѕРґР°
+	 * @param int $id города
 	 */
 	public function setReceiverCityId($id) {
 		$id = (int) $id;
 		if($id == 0) {
-			throw new Exception("РќРµРїСЂР°РІРёР»СЊРЅРѕ Р·Р°РґР°РЅ РіРѕСЂРѕРґ-РїРѕР»СѓС‡Р°С‚РµР»СЊ.");
+			throw new Exception("Неправильно задан город-получатель.");
 		}		
 		$this->receiverCityId = $id;
 	}	
 
 	/**
-	 * РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј С‚Р°СЂРёС„
+	 * Устанавливаем тариф
 	 * 
-	 * @param int $id С‚Р°СЂРёС„Р°
+	 * @param int $id тарифа
 	 */
 	public function setTariffId($id) {
 		$id = (int) $id;
 		if($id == 0) {
-			throw new Exception("РќРµРїСЂР°РІРёР»СЊРЅРѕ Р·Р°РґР°РЅ С‚Р°СЂРёС„.");
+			throw new Exception("Неправильно задан тариф.");
 		}		
 		$this->tariffId = $id;
 	}
 	
 	/**
-	 * РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂРµР¶РёРј РґРѕСЃС‚Р°РІРєРё (РґРІРµСЂСЊ-РґРІРµСЂСЊ=1, РґРІРµСЂСЊ-СЃРєР»Р°Рґ=2, СЃРєР»Р°Рґ-РґРІРµСЂСЊ=3, СЃРєР»Р°Рґ-СЃРєР»Р°Рґ=4)
+	 * Устанавливаем режим доставки (дверь-дверь=1, дверь-склад=2, склад-дверь=3, склад-склад=4)
 	 * 
-	 * @param int $id СЂРµР¶РёРј РґРѕСЃС‚Р°РІРєРё
+	 * @param int $id режим доставки
 	 */
 	public function setModeDeliveryId($id) {
 		$id = (int) $id;
 		if(!in_array($id, array(1,2,3,4))) {
-			throw new Exception("РќРµРїСЂР°РІРёР»СЊРЅРѕ Р·Р°РґР°РЅ СЂРµР¶РёРј РґРѕСЃС‚Р°РІРєРё.");
+			throw new Exception("Неправильно задан режим доставки.");
 		}
 		$this->modeId = $id;
 	}
 	
 	/**
-	 * Р”РѕР±Р°РІР»РµРЅРёРµ РјРµСЃС‚Р° РІ РѕС‚РїСЂР°РІР»РµРЅРёРё 
+	 * Добавление места в отправлении 
 	 * 
-	 * @param int $weight РІРµСЃ, РєРёР»РѕРіСЂР°РјРјС‹
-	 * @param int $length РґР»РёРЅР°, СЃР°РЅС‚РёРјРµС‚СЂС‹
-	 * @param int $width С€РёСЂРёРЅР°, СЃР°РЅС‚РёРјРµС‚СЂС‹
-	 * @param int $height РІС‹СЃРѕС‚Р°, СЃР°РЅС‚РёРјРµС‚СЂС‹
+	 * @param int $weight вес, килограммы
+	 * @param int $length длина, сантиметры
+	 * @param int $width ширина, сантиметры
+	 * @param int $height высота, сантиметры
 	 */
 	public function addGoodsItemBySize($weight, $length, $width, $height) {
-		//РїСЂРѕРІРµСЂРєР° РІРµСЃР°
+		//проверка веса
 		$weight = (float) $weight;
 		if($weight == 0.00) {
-			throw new Exception("РќРµРїСЂР°РІРёР»СЊРЅРѕ Р·Р°РґР°РЅ РІРµСЃ РјРµСЃС‚Р° в„– " . (count($this->getGoodslist())+1) . ".");
+			throw new Exception("Неправильно задан вес места № " . (count($this->getGoodslist())+1) . ".");
 		}
-		//РїСЂРѕРІРµСЂРєР° РѕСЃС‚Р°Р»СЊРЅС‹С… РІРµР»РёС‡РёРЅ
-		$paramsItem = array("РґР»РёРЅР°" 	=> $length, 
-							"С€РёСЂРёРЅР°" 	=> $width, 
-							"РІС‹СЃРѕС‚Р°" 	=> $height);
+		//проверка остальных величин
+		$paramsItem = array("длина" 	=> $length, 
+							"ширина" 	=> $width, 
+							"высота" 	=> $height);
 		foreach($paramsItem as $k=>$param) {
 			$param = (int) $param;
 			if($param==0) {
-				throw new Exception("РќРµРїСЂР°РІРёР»СЊРЅРѕ Р·Р°РґР°РЅ РїР°СЂР°РјРµС‚СЂ '" . $k . "' РјРµСЃС‚Р° в„– " . (count($this->getGoodslist())+1) . ".");
+				throw new Exception("Неправильно задан параметр '" . $k . "' места № " . (count($this->getGoodslist())+1) . ".");
 			}
 		}
 		$this->goodsList[] = array( 'weight' 	=> $weight, 
@@ -158,18 +158,18 @@ class CalculatePriceDeliveryCdek {
 	}
 
 	/**
-	 * Р”РѕР±Р°РІР»РµРЅРёРµ РјРµСЃС‚Р° РІ РѕС‚РїСЂР°РІР»РµРЅРёРё РїРѕ РѕР±СЉС‘РјСѓ (РєСѓР±.РјРµС‚СЂС‹)
+	 * Добавление места в отправлении по объёму (куб.метры)
 	 * 
-	 * @param int $weight РІРµСЃ, РєРёР»РѕРіСЂР°РјРјС‹
-	 * @param int $volume РѕР±СЉС‘РјРЅС‹Р№ РІРµСЃ, РјРµС‚СЂС‹ РєСѓР±РёС‡РµСЃРєРёРµ (Рђ * Р’ * РЎ)
+	 * @param int $weight вес, килограммы
+	 * @param int $volume объёмный вес, метры кубические (А * В * С)
 	 */
 	public function addGoodsItemByVolume($weight, $volume) {
-		$paramsItem = array("РІРµСЃ" 			=> $weight, 
-							"РѕР±СЉС‘РјРЅС‹Р№ РІРµСЃ" 	=> $volume);
+		$paramsItem = array("вес" 			=> $weight, 
+							"объёмный вес" 	=> $volume);
 		foreach($paramsItem as $k=>$param) {
 			$param = (float) $param;
 			if($param == 0.00) {
-				throw new Exception("РќРµРїСЂР°РІРёР»СЊРЅРѕ Р·Р°РґР°РЅ РїР°СЂР°РјРµС‚СЂ '" . $k . "' РјРµСЃС‚Р° в„– " . (count($this->getGoodslist())+1) . ".");
+				throw new Exception("Неправильно задан параметр '" . $k . "' места № " . (count($this->getGoodslist())+1) . ".");
 			}
 		}
 		$this->goodsList[] = array( 'weight' 	=> $weight, 
@@ -177,7 +177,7 @@ class CalculatePriceDeliveryCdek {
 	}
 	
 	/**
-	 * РџРѕР»СѓС‡РµРЅРёРµ РјР°СЃСЃРёРІР° РјРµСЃС‚ РѕС‚РїСЂР°РІР»РµРЅРёСЏ
+	 * Получение массива мест отправления
 	 * 
 	 * @return array
 	 */
@@ -189,15 +189,15 @@ class CalculatePriceDeliveryCdek {
 	}
 	
 	/**
-	 * РґРѕР±Р°РІР»РµРЅРёРµ С‚Р°СЂРёС„Р° РІ СЃРїРёСЃРѕРє С‚Р°СЂРёС„РѕРІ СЃ РїСЂРёРѕСЂРёС‚РµС‚Р°РјРё
+	 * добавление тарифа в список тарифов с приоритетами
 	 * 
-	 * @param int $id С‚Р°СЂРёС„
-	 * @param int $priority default false РїСЂРёРѕСЂРёС‚РµС‚
+	 * @param int $id тариф
+	 * @param int $priority default false приоритет
 	 */
 	public function addTariffPriority($id, $priority = 0) {
 		$id = (int) $id;
 		if($id == 0) {
-			throw new Exception("РќРµРїСЂР°РІРёР»СЊРЅРѕ Р·Р°РґР°РЅ id С‚Р°СЂРёС„Р°.");
+			throw new Exception("Неправильно задан id тарифа.");
 		}
         $priority = ($priority > 0) ? $priority : count($this->tariffList)+1;
 		$this->tariffList[] = array( 'priority' => $priority,
@@ -205,7 +205,7 @@ class CalculatePriceDeliveryCdek {
 	}
 	
 	/**
-	 * РџРѕР»СѓС‡РµРЅРёРµ РјР°СЃСЃРёРІР° Р·Р°РґР°РЅРЅС‹С… С‚Р°СЂРёС„РѕРІ
+	 * Получение массива заданных тарифов
 	 * 
 	 * @return array
 	 */
@@ -217,8 +217,8 @@ class CalculatePriceDeliveryCdek {
 	}
 
 	/**
-	 * Р’С‹РїРѕР»РЅРµРЅРёРµ POST-Р·Р°РїСЂРѕСЃР° РЅР° СЃРµСЂРІРµСЂ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РґР°РЅРЅС‹С…
-	 * РїРѕ Р·Р°РїСЂР°С€РёРІР°РµРјС‹Рј РїР°СЂР°РјРµС‚СЂР°Рј.
+	 * Выполнение POST-запроса на сервер для получения данных
+	 * по запрашиваемым параметрам.
 	 * 
 	 * 
 	 */
@@ -232,7 +232,7 @@ class CalculatePriceDeliveryCdek {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $this->jsonUrl);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        //РґР»СЏ РѕС‚Р»Р°РґРєРё СЂР°СЃРєРѕРјРјРµРЅС‚РёСЂСѓР№С‚Рµ Рё РїСЂРѕСЃРјРѕС‚СЂРёС‚Рµ С„Р°Р№Р» errorlog.txt
+        //для отладки раскомментируйте и просмотрите файл errorlog.txt
         //$fp = fopen(dirname(__FILE__).'/errorlog.txt', 'w');
         //curl_setopt($ch, CURLOPT_VERBOSE, 1);
         //curl_setopt($ch, CURLOPT_STDERR, $fp); 
@@ -251,58 +251,58 @@ class CalculatePriceDeliveryCdek {
 	}
 	
 	/**
-	 * Р Р°СЃС‡РµС‚ СЃС‚РѕРёРјРѕСЃС‚Рё РґРѕСЃС‚Р°РІРєРё
+	 * Расчет стоимости доставки
 	 * 
 	 * @return bool
 	 */
 	public function calculate() {
-		//С„РѕСЂРјРёСЂСѓРµРј РјР°СЃСЃРёРІ РґР»СЏ РѕС‚РїСЂР°РІРєРё curl-post-Р·Р°РїСЂРѕСЃР°
-		//РїРµСЂРµРґР°С‘Рј С‚РѕР»СЊРєРѕ СЏРІРЅРѕ Р·Р°РґР°РЅРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹, СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Рµ РРњ
-		//РІСЃСЋ РїСЂРѕРІРµСЂРєСѓ Рё РѕР±СЂР°Р±РѕС‚РєСѓ Р±СѓРґРµРј РґРµР»Р°С‚СЊ РЅР° СЃС‚РѕСЂРѕРЅРµ СЃРµСЂРІРµСЂР°
+		//формируем массив для отправки curl-post-запроса
+		//передаём только явно заданные параметры, установленные ИМ
+		//всю проверку и обработку будем делать на стороне сервера
 		$data = array();
-		//РїРѕР»СѓС‡РµРЅРёРµ РІСЃРµС… СЃРІРѕР№СЃС‚РІ С‚РµРєСѓС‰РµРіРѕ РѕР±СЉРµРєС‚Р° РЅРµ СЂР°Р±РѕС‚Р°РµС‚, С‚.Рє. Сѓ РЅР°СЃ СЃРІРѕР№СЃС‚РІР° private
-		//РїРѕСЌС‚РѕРјСѓ РѕРїСЂРµРґРµР»РёРј РјР°СЃСЃРёРІ $data СЏРІРЅРѕ
-		//РїСЂРѕРІРµСЂСЏРµРј РЅР° СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅСѓСЋ РїРµСЂРµРјРµРЅРЅСѓСЋ Рё РЅРµ-NULL-Р·РЅР°С‡РµРЅРёРµ
+		//получение всех свойств текущего объекта не работает, т.к. у нас свойства private
+		//поэтому определим массив $data явно
+		//проверяем на установленную переменную и не-NULL-значение
 		
-		//РІРµСЂСЃРёСЏ РјРѕРґСѓР»СЏ
+		//версия модуля
 		isset($this->version) ? $data['version'] = $this->version : '';
-		//РґР°С‚Р° РїР»Р°РЅРёСЂСѓРµРјРѕР№ РґРѕСЃС‚Р°РІРєРё, РµСЃР»Рё РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ, Р±РµСЂС‘С‚СЃСЏ СЃРµРіРѕРґРЅСЏС€РЅРёР№ РґРµРЅСЊ
+		//дата планируемой доставки, если не установлено, берётся сегодняшний день
 		$data['dateExecute'] = $this->dateExecute;
-		//Р°РІС‚РѕСЂРёР·Р°С†РёСЏ: Р»РѕРіРёРЅ
+		//авторизация: логин
 		isset($this->authLogin) ? $data['authLogin'] = $this->authLogin : '';
-		//Р°РІС‚РѕСЂРёР·Р°С†РёСЏ: РїР°СЂРѕР»СЊ
+		//авторизация: пароль
 		isset($this->authPassword) ? $data['secure'] = $this->_getSecureAuthPassword() : '';
-		//РіРѕСЂРѕРґ-РѕС‚РїСЂР°РІРёС‚РµР»СЊ
+		//город-отправитель
 		isset($this->senderCityId) ? $data['senderCityId'] = $this->senderCityId : '';
-		//РіРѕСЂРѕРґ-РїРѕР»СѓС‡Р°С‚РµР»СЊ
+		//город-получатель
 		isset($this->receiverCityId) ? $data['receiverCityId'] = $this->receiverCityId : '';
-		//РІС‹Р±СЂР°РЅРЅС‹Р№ С‚Р°СЂРёС„
+		//выбранный тариф
 		isset($this->tariffId) ? $data['tariffId'] = $this->tariffId : '';
-		//СЃРїРёСЃРѕРє С‚Р°СЂРёС„РѕРІ СЃ РїСЂРёРѕСЂРёС‚РµС‚Р°РјРё
+		//список тарифов с приоритетами
 		( isset($this->tariffList)  ) ? $data['tariffList'] = $this->tariffList : '';
-		//СЂРµР¶РёРј РґРѕСЃС‚Р°РІРєРё
+		//режим доставки
 		isset($this->modeId) ? $data['modeId'] = $this->modeId : '';
 		
-		//СЃРїРёСЃРѕРє РјРµСЃС‚
+		//список мест
 		if( isset($this->goodsList) ) {
 			foreach ($this->goodsList as $idGoods => $goods) {
 				$data['goods'][$idGoods] = array();
-				//РІРµСЃ
+				//вес
 				(isset($goods['weight']) && $goods['weight'] <> '' && $goods['weight'] > 0.00) ? $data['goods'][$idGoods]['weight'] = $goods['weight'] : '';
-				//РґР»РёРЅР°
+				//длина
 				(isset($goods['length']) && $goods['length'] <> '' && $goods['length'] > 0) ? $data['goods'][$idGoods]['length'] = $goods['length'] : '';
-				//С€РёСЂРёРЅР°
+				//ширина
 				(isset($goods['width']) && $goods['width'] <> '' && $goods['width'] > 0) ? $data['goods'][$idGoods]['width'] = $goods['width'] : '';
-				//РІС‹СЃРѕС‚Р°
+				//высота
 				(isset($goods['height']) && $goods['height'] <> '' && $goods['height'] > 0) ? $data['goods'][$idGoods]['height'] = $goods['height'] : '';
-				//РѕР±СЉРµРјРЅС‹Р№ РІРµСЃ (РєСѓР±.Рј)
+				//объемный вес (куб.м)
 				(isset($goods['volume']) && $goods['volume'] <> '' && $goods['volume'] > 0.00) ? $data['goods'][$idGoods]['volume'] = $goods['volume'] : '';
 
 			}
 		}
-		//РїСЂРѕРІРµСЂРєР° РЅР° РїРѕРґРєР»СЋС‡РЅРёРµ Р±РёР±Р»РёРѕС‚РµРєРё curl
+		//проверка на подключние библиотеки curl
 		if(!extension_loaded('curl')) {
-			throw new Exception("РќРµ РїРѕРґРєР»СЋС‡РµРЅР° Р±РёР±Р»РёРѕС‚РµРєР° CURL");
+			throw new Exception("Не подключена библиотека CURL");
 		}		
 		$response = $this->_getRemoteData($data);
         
@@ -315,13 +315,13 @@ class CalculatePriceDeliveryCdek {
         }
         
 		//return (isset($response['result']) && (!empty($response['result']))) ? true : false;
-		//СЂРµР·СѓР»СЊС‚Р°С‚
+		//результат
 		//$result = ($this->getResponse());
 		//return $result;
 	}
 	
 	/**
-	 * РџРѕР»СѓС‡РёС‚СЊ СЂРµР·СѓР»СЊС‚Р°С‚С‹ РїРѕРґСЃС‡РµС‚Р°
+	 * Получить результаты подсчета
 	 * 
 	 * @return array
 	 */
@@ -330,7 +330,7 @@ class CalculatePriceDeliveryCdek {
 	}
 	
 	/**
-	 * РїРѕР»СѓС‡РёС‚СЊ РєРѕРґ Рё С‚РµРєСЃС‚ РѕС€РёР±РєРё
+	 * получить код и текст ошибки
 	 * 
 	 * @return object
 	 */

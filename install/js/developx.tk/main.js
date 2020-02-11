@@ -18,10 +18,10 @@ $( document ).ready(function() {
                     ACTION: action,
                     AJAX_CALL: 'Y'
                 };
-                $this.addLog('Р—Р°РіСЂСѓР·РєР° РїСѓРЅРєС‚РѕРІ ' + button.val() + ' - СЃС‚Р°СЂС‚');
+                $this.addLog('Загрузка пунктов ' + button.val() + ' - старт');
                 $.get($this.ajaxPath, gObj).done(function (hData) {
                     $this.addLog(hData);
-                    $this.addLog('Р—Р°РіСЂСѓР·РєР° РїСѓРЅРєС‚РѕРІ ' + button.val() + ' - РєРѕРЅРµС†');
+                    $this.addLog('Загрузка пунктов ' + button.val() + ' - конец');
                 }).fail(function (jqxhr, textStatus, error) {
                     console.error(
                         "Request Failed: " + textStatus + ", " + error

@@ -1,5 +1,7 @@
 <?php
+
 namespace Developx\Tk\Tks;
+
 use Developx\Tk\Options;
 
 /**
@@ -15,29 +17,30 @@ class Energy extends TksBase
         'price' => 'https://mainapi.nrg-tk.ru/v3/price',
     ];
     public $tkName = 'energy';
-    public $tkTitle = 'Ğ­Ğ½ĞµÑ€Ğ³Ğ¸Ñ';
+    public $tkTitle = 'İíåğãèÿ';
     public $externalCode = 'ENERGY_ID';
     public $apiKeyCode = 'ENERGY_API_KEY';
 
-    public function getPriceTime($cityTo, $cityFrom){
+    public function getPriceTime($cityTo, $cityFrom)
+    {
         $options = $this->getCargoOptions();
         $price = $this->getData(
             $this->methods['price'],
             json_encode([
-              "idCityFrom" => (int)$cityFrom,
-              "idCityTo" => (int)$cityTo,
-              "cover" => 0,
-              "idCurrency" => 0,
-              "items" => [
-                  [
-                    "weight" => floatval($options['weight']),
-                    "width" => floatval($options['wide']),
-                    "height" => floatval($options['height']),
-                    "length" => floatval($options['length'])
-                  ]
-              ],
-              "declaredCargoPrice" => 0,
-              "idClient" => 0
+                "idCityFrom" => (int)$cityFrom,
+                "idCityTo" => (int)$cityTo,
+                "cover" => 0,
+                "idCurrency" => 0,
+                "items" => [
+                    [
+                        "weight" => floatval($options['weight']),
+                        "width" => floatval($options['wide']),
+                        "height" => floatval($options['height']),
+                        "length" => floatval($options['length'])
+                    ]
+                ],
+                "declaredCargoPrice" => 0,
+                "idClient" => 0
             ]),
             'post',
             [
@@ -48,7 +51,7 @@ class Energy extends TksBase
         $price = json_decode($price, true);
         $time = preg_replace('/[^\d-]/', '', $price['transfer'][0]['interval']);
         $timeArr = explode('-', $time);
-        if ($timeArr[1]){
+        if ($timeArr[1]) {
             $time = implode(';', $timeArr);
         }
         return [
@@ -57,7 +60,8 @@ class Energy extends TksBase
         ];
     }
 
-    public function getAllPoints(){
+    public function getAllPoints()
+    {
         $citys = $this->getData(
             $this->methods['citys'],
             false,
@@ -73,7 +77,7 @@ class Energy extends TksBase
     public function preparePoints($points)
     {
         $preparePoints = [];
-        foreach ($points['cityList'] as $point){
+        foreach ($points['cityList'] as $point) {
             $preparePoints[$point['name']]['CITY'] = $point['name'];
             $preparePoints[$point['name']]['EXTERNAL'] = $point['id'];
             foreach ($point['warehouses'] as $terminal) {
@@ -83,8 +87,8 @@ class Energy extends TksBase
                     'ADR' => $terminal['address'],
                     'PHONE' => $terminal['phone'] ? $terminal['phone'] : '-',
                     'WORK_TIME' => $terminal['calcSchedule']['arrival'] ? $terminal['calcSchedule']['arrival'] : '-',
-                    'COORD' => $terminal['latitude'].":".$terminal['longitude'],
-                    'TK_ID' => $this->tkName.$terminal['id']
+                    'COORD' => $terminal['latitude'] . ":" . $terminal['longitude'],
+                    'TK_ID' => $this->tkName . $terminal['id']
                 ];
             }
         }

@@ -43,8 +43,7 @@ class developx_tk extends CModule
         $arModuleVersion = [];
 
         include __DIR__ . '/version.php';
-        if (is_array($arModuleVersion) && array_key_exists('VERSION', $arModuleVersion))
-        {
+        if (is_array($arModuleVersion) && array_key_exists('VERSION', $arModuleVersion)) {
             $this->MODULE_VERSION = $arModuleVersion['VERSION'];
             $this->MODULE_VERSION_DATE = $arModuleVersion['VERSION_DATE'];
         }
@@ -74,7 +73,7 @@ class developx_tk extends CModule
 
     public function InstallFiles()
     {
-      //  CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/local/modules/developx.tk/install/admin", $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin", true, true);
+        //  CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/local/modules/developx.tk/install/admin", $_SERVER["DOCUMENT_ROOT"]."/bitrix/admin", true, true);
         return true;
     }
 

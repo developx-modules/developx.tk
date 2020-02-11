@@ -50,7 +50,7 @@ $( document ).ready(function() {
                     baloonHTML += "<div class='pointPopup' class='" + point['TK'] + "'>";
                     baloonHTML += "<div class='pointImg'><img src='" + $this.path + "/icons/" + point['TK'] + ".png'></div>";
                     baloonHTML += "<div class='pointTitle'>" + $this.prices[point['TK']]['TITLE'] + "</div>";
-                    baloonHTML += "<div class='pointPrice'>" + $this.prices[point['TK']]['PRICE'] + " СЂСѓР±</div>";
+                    baloonHTML += "<div class='pointPrice'>" + $this.prices[point['TK']]['PRICE'] + " ?</div>";
                     baloonHTML += "<div class='pointTime'>" + $this.prices[point['TK']]['TIME_FORMAT'] + "</div>"
                     baloonHTML += "<div class='pointAdress'>" + point['ADR'] + "</div>";
                     if (typeof point['WORK_TIME'] != 'undefined' && point['WORK_TIME'] != '-') {
@@ -87,7 +87,7 @@ $( document ).ready(function() {
                         baloonHTML += '<span class="phone">' + point['PHONE'] + '</span>';
                     }
                     baloonHTML += '</td>';
-                    baloonHTML += '<td>' + $this.prices[point['TK']]['PRICE'] + ' СЂСѓР±</td>';
+                    baloonHTML += '<td>' + $this.prices[point['TK']]['PRICE'] + ' ?</td>';
                     baloonHTML += '<td class="time">' + $this.prices[point['TK']]['TIME_FORMAT'] + '</td>';
                     baloonHTML += '</tr>';
                     $("#checkoutList tbody").prepend(baloonHTML);
@@ -120,7 +120,7 @@ $( document ).ready(function() {
                 return false;
             });
 
-            $("#cityChoseJs").chosen({no_results_text: "РќРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ"}).change(function () {
+            $("#cityChoseJs").chosen({no_results_text: "Ничего не найдено"}).change(function () {
                 window.location.href = '?CITY_ID=' + $('#cityChoseJs').val();
             });
 

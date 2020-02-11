@@ -1,4 +1,5 @@
 <?
+
 namespace Developx\Tk;
 
 use Developx\Tk\Data;
@@ -45,7 +46,7 @@ class Options
     public function __construct()
     {
         $this->time = time();
-        foreach ($this->arOptions as $key => $prop){
+        foreach ($this->arOptions as $key => $prop) {
             $this->arOptions[$key] = \COption::GetOptionString($this->moduleName, $key);
         }
 
@@ -135,4 +136,5 @@ class Options
         return $this->arOptions['CITY_TYPE_ID'];
     }
 }
+
 ?>

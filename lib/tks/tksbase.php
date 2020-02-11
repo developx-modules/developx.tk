@@ -63,7 +63,7 @@ abstract class TksBase
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($ch);
         if(curl_exec($ch) === false){
-            echo 'РћС€РёР±РєР° curl: ' . curl_error($ch);
+            echo 'Ошибка curl: ' . curl_error($ch);
         }
         curl_close($ch);
         return $result;
@@ -103,11 +103,11 @@ abstract class TksBase
         $this->updatePointsDB($pointsResult);
 
         $result = '';
-        $result .= 'РљРѕР»РёС‡РµСЃС‚РІРѕ РіРѕСЂРѕРґРѕРІ '.$this->tkName.' - '.count($pointsPreared).'<br>';
-        $result .= 'РљРѕР»РёС‡РµСЃС‚РІРѕ РіРѕСЂРѕРґРѕРІ РЅР° СЃР°Р№С‚Рµ - '.count($locations).'<br>';
-        $result .= 'РљРѕР»РёС‡РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРЅС‹С… РіРѕСЂРѕРґРѕРІ '.$this->tkName.' - '.$finded.'<br>';
-        $result .= 'РќРµ РЅР°Р№РґРµРЅС‹Рµ РіРѕСЂРѕРґР° ('.$notFind.')<br>';
-        $result .= 'РљРѕР»РёС‡РµСЃС‚РІРѕ РґРѕР±Р°РІР»РµРЅРЅС‹С… С‚РµСЂРјРёРЅР°Р»РѕРІ - '.count($pointsResult).'<br>';
+        $result .= 'Количество городов '.$this->tkName.' - '.count($pointsPreared).'<br>';
+        $result .= 'Количество городов на сайте - '.count($locations).'<br>';
+        $result .= 'Количество найденных городов '.$this->tkName.' - '.$finded.'<br>';
+        $result .= 'Не найденые города ('.$notFind.')<br>';
+        $result .= 'Количество добавленных терминалов - '.count($pointsResult).'<br>';
         return $result;
     }
 
