@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+$(document).ready(function () {
 
     if (window.DevelopxTK)
         return;
@@ -17,15 +17,15 @@ $( document ).ready(function() {
     };
 
     window.DevelopxTK.prototype = {
-        ymapsBidner: function(){
+        ymapsBidner: function () {
             var $this = this;
-            ymaps.ready(function (){
+            ymaps.ready(function () {
                 $this.initMap();
             });
         },
-        initMap: function(){
+        initMap: function () {
             var $this = this;
-            ymaps.geocode($this.cityName , {
+            ymaps.geocode($this.cityName, {
                 results: 1
             }).then(function (res) {
                 console.log(res);
@@ -39,9 +39,9 @@ $( document ).ready(function() {
                 $this.L_addPoints();
             });
         },
-        Y_addPoints: function(){
+        Y_addPoints: function () {
             var $this = this;
-            for(var i in $this.points){
+            for (var i in $this.points) {
                 var point = $this.points[i];
                 if (typeof $this.prices[point['TK']] !== 'undefined') {
 
@@ -50,7 +50,7 @@ $( document ).ready(function() {
                     baloonHTML += "<div class='pointPopup' class='" + point['TK'] + "'>";
                     baloonHTML += "<div class='pointImg'><img src='" + $this.path + "/icons/" + point['TK'] + ".png'></div>";
                     baloonHTML += "<div class='pointTitle'>" + $this.prices[point['TK']]['TITLE'] + "</div>";
-                    baloonHTML += "<div class='pointPrice'>" + $this.prices[point['TK']]['PRICE'] + " ?</div>";
+                    baloonHTML += "<div class='pointPrice'>" + $this.prices[point['TK']]['PRICE'] + " p</div>";
                     baloonHTML += "<div class='pointTime'>" + $this.prices[point['TK']]['TIME_FORMAT'] + "</div>"
                     baloonHTML += "<div class='pointAdress'>" + point['ADR'] + "</div>";
                     if (typeof point['WORK_TIME'] != 'undefined' && point['WORK_TIME'] != '-') {
@@ -71,9 +71,9 @@ $( document ).ready(function() {
                 }
             }
         },
-        L_addPoints: function(){
+        L_addPoints: function () {
             var $this = this;
-            for(var i in $this.points){
+            for (var i in $this.points) {
                 var point = $this.points[i];
                 if (typeof $this.prices[point['TK']] !== 'undefined') {
                     var id = point['ID'];
@@ -87,14 +87,14 @@ $( document ).ready(function() {
                         baloonHTML += '<span class="phone">' + point['PHONE'] + '</span>';
                     }
                     baloonHTML += '</td>';
-                    baloonHTML += '<td>' + $this.prices[point['TK']]['PRICE'] + ' ?</td>';
+                    baloonHTML += '<td>' + $this.prices[point['TK']]['PRICE'] + ' p</td>';
                     baloonHTML += '<td class="time">' + $this.prices[point['TK']]['TIME_FORMAT'] + '</td>';
                     baloonHTML += '</tr>';
                     $("#checkoutList tbody").prepend(baloonHTML);
                 }
             }
         },
-        Y_allPoint: function(){
+        Y_allPoint: function () {
             var $this = this;
             $this.Y_map.setCenter($this.center);
             $this.Y_map.setZoom(10);
@@ -108,20 +108,16 @@ $( document ).ready(function() {
                 return false;
             });
             $('.navLinkJs').click(function () {
-                 $('.navLinkJs').removeClass('active');
-                 $(this).addClass('active');
-                 $('.mapContentJs').removeClass('selected');
-                 $($(this).attr('href')).addClass('selected');
-                 return false;
+                $('.navLinkJs').removeClass('active');
+                $(this).addClass('active');
+                $('.mapContentJs').removeClass('selected');
+                $($(this).attr('href')).addClass('selected');
+                return false;
             });
 
             $('.cityNameJs').click(function () {
                 $('body').addClass('map-modal-active');
                 return false;
-            });
-
-            $("#cityChoseJs").chosen({no_results_text: "Ничего не найдено"}).change(function () {
-                window.location.href = '?CITY_ID=' + $('#cityChoseJs').val();
             });
 
             $('.map-modal .modalCloseJs').click(function () {

@@ -9,7 +9,7 @@ Loc::loadMessages(__FILE__);
 <?$APPLICATION->AddHeadScript($templateFolder . "/chosen.jquery.min.js");?>
 <?$APPLICATION->SetAdditionalCSS($templateFolder . "/chosen.min.css");?>
 
-<?if (!empty($this->arResult['CITY_ID'])) {?>
+<?if (!empty($arResult['CITY_ID'])) {?>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=<?=$arParams['YANDEX_API_KEY']?>&lang=ru_RU" type="text/javascript">
     </script>
     <script>
@@ -20,7 +20,7 @@ Loc::loadMessages(__FILE__);
 <?}?>
 
 <div class="map-box">
-    <?if (!empty($this->arResult['CITY_ID'])) {?>
+    <?if (!empty($arResult['CITY_ID'])) {?>
         <div class="row">
             <div class="col-md-6">
                 <div class="title"><?=Loc::getMessage('DX_TX_TITLE')?><a href="#" class="header__city cityNameJs" data-toggle="modal" data-target="#cityModal"><?=$arResult['CURRENT_LOCATION']['LOC_NAME']?></a></div>
@@ -57,7 +57,11 @@ Loc::loadMessages(__FILE__);
     <?}else{?>
         <div class="row">
             <div class="col-md-6">
-                <div class="title"><a href="#" class="header__city cityNameJs" data-toggle="modal" data-target="#cityModal"><?=Loc::getMessage('DX_TX_TITLE_SELECT')?></a></div>
+                <div class="title">
+                    <a href="#" class="header__city cityNameJs" data-toggle="modal" data-target="#cityModal">
+                        <?=Loc::getMessage('DX_TX_TITLE_SELECT')?>
+                    </a>
+                </div>
             </div>
         </div>
     <?}?>
@@ -92,5 +96,12 @@ Loc::loadMessages(__FILE__);
     </div>
 </div>
 
-
+<script>
+    $( document ).ready(function() {
+        $('#cityChoseJs').chosen();
+        $("#cityChoseJs").chosen({no_results_text: "<?=Loc::getMessage('DX_TX_FIND_NO')?>"}).change(function () {
+            window.location.href = '?CITY_ID=' + $('#cityChoseJs').val();
+        });
+    });
+</script>
 

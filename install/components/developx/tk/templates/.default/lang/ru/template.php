@@ -6,4 +6,6 @@ $MESS["DX_TX_TITLE_SELECT"] = "Выберите город";
 $MESS["DX_TX_LIST_ADR"] = "Адрес";
 $MESS["DX_TX_LIST_PRICE"] = "Стоимость";
 $MESS["DX_TX_LIST_TIME"] = "Сроки";
+$MESS["DX_TX_FIND_NO"] = "Ничего не найдено";
+
 ?>

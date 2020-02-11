@@ -1,8 +1,8 @@
-.map-box{
+.map-box {
 
 }
 
-.map-box .map-content{
+.map-box .map-content {
     height: 500px;
     display: none;
     margin: 20px 0;
@@ -10,7 +10,7 @@
 }
 
 
-.map-box .map-content.selected{
+.map-box .map-content.selected {
     display: block;
 }
 
@@ -50,7 +50,7 @@
     width: 60px;
 }
 
-.product-delivery__table .phone{
+.product-delivery__table .phone {
     display: inline-block;
     color: #5a5a5a;
     width: 100%;
@@ -70,24 +70,24 @@
     display: none;
 }
 
-.map-box .title{
+.map-box .title {
     font-size: 20px;
 }
 
-.map-box .nav{
+.map-box .nav {
     font-size: 20px;
 }
 
-.map-box .nav-link{
+.map-box .nav-link {
     margin-left: 10px;
     text-decoration: none;
 }
 
-.map-box .nav-link.active{
+.map-box .nav-link.active {
     color: #000;
 }
 
-.map-modal{
+.map-modal {
     display: none;
     width: 700px;
     height: 140px;
@@ -104,14 +104,15 @@
     transition: 0.3s;
 }
 
-.product-delivery__table .pointImg{
+.product-delivery__table .pointImg {
     text-align: center;
 }
-.product-delivery__table .pointImg img{
+
+.product-delivery__table .pointImg img {
     width: 60px;
 }
 
-.product-delivery__table td.time{
+.product-delivery__table td.time {
     width: 100px;
 }
 
@@ -145,15 +146,15 @@
     opacity: 1;
 }
 
-.map-modal-active .map-box .overflow{
+.map-modal-active .map-box .overflow {
     display: block;
 }
 
-.map-modal-active .map-box .map-modal{
+.map-modal-active .map-box .map-modal {
     display: block;
 }
 
-.map-modal .modal-close{
+.map-modal .modal-close {
     right: 15px;
     top: 15px;
     position: absolute;
@@ -161,28 +162,28 @@
     height: 15px;
 }
 
-.map-modal .modal-close svg{
+.map-modal .modal-close svg {
     width: 100%;
     height: 100%;
 }
 
-.map-modal .modal-title{
+.map-modal .modal-title {
     font-size: 20px;
 }
 
 
-.map-modal .modal-dialog{
+.map-modal .modal-dialog {
     margin: 0;
     height: 100%;
     width: initial;
 }
 
-.map-modal .modal-content{
+.map-modal .modal-content {
     height: 100%;
 }
 
-.chosen-container{
-    width: 100%!important;
+.chosen-container {
+    width: 100% !important;
     margin: 10px 0;
 }
 
@@ -190,14 +191,20 @@
     from {
         opacity: 0;
         -webkit-transform: scale3d(0.3, 0.3, 0.3);
-        transform: scale3d(0.3, 0.3, 0.3); }
+        transform: scale3d(0.3, 0.3, 0.3);
+    }
     50% {
-        opacity: 1; } }
+        opacity: 1;
+    }
+}
 
 @keyframes zoomIn {
     from {
         opacity: 0;
         -webkit-transform: scale3d(0.3, 0.3, 0.3);
-        transform: scale3d(0.3, 0.3, 0.3); }
+        transform: scale3d(0.3, 0.3, 0.3);
+    }
     50% {
-        opacity: 1; } }
+        opacity: 1;
+    }
+}
