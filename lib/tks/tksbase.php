@@ -103,11 +103,11 @@ abstract class TksBase
         $this->updatePointsDB($pointsResult);
 
         $result = '';
-        $result .= 'Количество городов '.$this->tkName.' - '.count($pointsPreared).'<br>';
-        $result .= 'Количество городов на сайте - '.count($locations).'<br>';
-        $result .= 'Количество найденных городов '.$this->tkName.' - '.$finded.'<br>';
-        $result .= 'Не найденые города ('.$notFind.')<br>';
-        $result .= 'Количество добавленных терминалов - '.count($pointsResult).'<br>';
+        $result .= 'Number of cities '.$this->tkName.' - '.count($pointsPreared).'<br>';
+        $result .= 'Number of cities on site - '.count($locations).'<br>';
+        $result .= 'Number of found cities '.$this->tkName.' - '.$finded.'<br>';
+        $result .= 'Not found cities ('.$notFind.')<br>';
+        $result .= 'Number of added pointsd - '.count($pointsResult).'<br>';
         return $result;
     }
 

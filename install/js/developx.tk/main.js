@@ -18,10 +18,10 @@ $( document ).ready(function() {
                     ACTION: action,
                     AJAX_CALL: 'Y'
                 };
-                $this.addLog('Загрузка пунктов ' + button.val() + ' - старт');
+                $this.addLog('Point load ' + button.val() + ' - start');
                 $.get($this.ajaxPath, gObj).done(function (hData) {
                     $this.addLog(hData);
-                    $this.addLog('Загрузка пунктов ' + button.val() + ' - конец');
+                    $this.addLog('Point load ' + button.val() + ' - end');
                 }).fail(function (jqxhr, textStatus, error) {
                     console.error(
                         "Request Failed: " + textStatus + ", " + error
