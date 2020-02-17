@@ -1,3 +1,3 @@
 <?php
-$MESS ['dx_tk_module_name']				        = "Developx: расчет доставки транспортными компаниями";
-$MESS ['dx_tk_module_description']				= "ПЭК, Сдек, ЖелДорЭкспедиция, Деловые линии, Энергия";
+$MESS ['DX_TK_MODULE_NAME'] = "Developx: расчет доставки транспортными компаниями";
+$MESS ['DX_TK_MODULE_DESCRIPTION'] = "ПЭК, Сдек, ЖелДорЭкспедиция, Деловые линии, Энергия";

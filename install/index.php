@@ -50,8 +50,8 @@ class developx_tk extends CModule
 
         Loc::loadMessages(__FILE__);
         $this->MODULE_ID = 'developx.tk';
-        $this->MODULE_NAME = Loc::getMessage('dx_tk_module_name');
-        $this->MODULE_DESCRIPTION = Loc::getMessage('dx_tk_module_description');
+        $this->MODULE_NAME = Loc::getMessage('DX_TK_MODULE_NAME');
+        $this->MODULE_DESCRIPTION = Loc::getMessage('DX_TK_MODULE_DESCRIPTION');
         $this->MODULE_GROUP_RIGHTS = 'N';
         $this->PARTNER_NAME = 'Developx';
         $this->PARTNER_URI = 'https://developx.ru';
